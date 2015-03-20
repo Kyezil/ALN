@@ -1,10 +1,16 @@
 #include "LU.hh"
 #include <iostream>
-
+using namespace std;
 int main() {
-    LU mat(3);
+    int n;
+    cout << "Enter dimension of Matrix:" << endl;
+    cin >> n;
+
+    LU mat(n);
     mat.read();
     mat.print_L();
-    std::cout << std::endl;
+    cout << std::endl;
     mat.print_U();
+    cout << std::endl;
+   mat.print_P();
 }

@@ -4,8 +4,10 @@
 class LU {
     private:
         double ** mat;
-        unsigned dim;
+        int *rows;
+        int dim;
         void descompose();
+        const static unsigned OUT_DIG = 5;
     public:
         LU();
         //\pre true
@@ -20,8 +22,11 @@ class LU {
         void read();
         //\pre  initialized NxN matrix and NxN doubles at input
         //\post read doubles and perform descomposition LU
-       
+        
         void print() const;
+        //\pre true
+        //\post print content of matrix
+
         void print_L() const;
         //\pre  matrix has been descomposed
         //\post prints L matrix
@@ -29,5 +34,9 @@ class LU {
         void print_U() const;
         //\pre matrix has been descomposed
         //\post prints U matrix
+
+        void print_P() const;
+        //\pre initialized matrix
+        //\post prints P matrix        
 };
 #endif
