@@ -6,10 +6,12 @@ class LU : public Matrix {
     private:
         void descompose(void (LU::*pivot)(const unsigned i));
         //apply Gauss reduction
+        void partial_pivoting(const unsigned i);
+        //max element of row
         void partial_scaled_pivoting(const unsigned i);
-        //change pivot if needed
+        //relative max element of column 
         void total_pivoting(const unsigned i);
-        //change pivot col and rows
+        //max element
     public:
         LU();
         //\pre true
@@ -22,7 +24,8 @@ class LU : public Matrix {
         void read(char c);
         //\pre  initialized NxN matrix and NxN doubles at input
         // @param c: t use total_pivoting
-        //           p use partial_scaled_pivoting
+        //           s use partial_scaled_pivoting
+        //           p use partial_pivoting
         //           else do not pivot
         //\post read doubles and perform descomposition LU
 

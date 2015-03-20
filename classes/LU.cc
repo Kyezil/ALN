@@ -6,6 +6,25 @@ LU::LU() : Matrix(){}
 
 LU::LU(const unsigned n) : Matrix(n) {}
 
+void LU::partial_pivoting(unsigned i) {
+        double max_pivot = 0;
+        unsigned pivot_row = i;
+        for (int j = i; j < N; ++j) {
+            //get max element of row j
+            double max = std::abs((*this)(j,i));
+            for (int k = j+1; k < M; ++k)
+                if (std::abs((*this)(j,k)) > max) max = std::abs((*this)(j,k));
+            if (max > max_pivot) {
+                max_pivot = max;
+                pivot_row = j;
+            }
+        }
+        //Swap rows
+        if (pivot_row != i) {
+            std::cerr << "Perform swap of rows: " << i << " and " << pivot_row << std::endl;
+            perm_row(i,pivot_row);
+        }
+}
 void LU::partial_scaled_pivoting(unsigned i) {
         //Permut row, scaled partial pivoting
         double max_pivot = 0;
@@ -67,7 +86,8 @@ for (int i = 0; i < N; ++i) {
 void LU::read(char c) {
     Matrix::read();
     void (LU::*pivot)(const unsigned) = NULL;
-    if (c == 'p') pivot = &LU::partial_scaled_pivoting;
+    if (c == 'p') pivot = &LU::partial_pivoting;
+    else if (c == 's') pivot = &LU::partial_scaled_pivoting;
     else if (c == 't') pivot = &LU::total_pivoting;
     descompose(pivot);
 }
