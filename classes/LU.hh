@@ -1,13 +1,15 @@
 /* Class LU */
 #ifndef LU_HH
 #define LU_HH
-class LU {
+#include "Matrix.hh"
+class LU : public Matrix {
     private:
-        double ** mat;
-        int *rows;
-        int dim;
-        void descompose();
-        const static unsigned OUT_DIG = 5;
+        void descompose(void (LU::*pivot)(const unsigned i));
+        //apply Gauss reduction
+        void partial_scaled_pivoting(const unsigned i);
+        //change pivot if needed
+        void total_pivoting(const unsigned i);
+        //change pivot col and rows
     public:
         LU();
         //\pre true
@@ -17,15 +19,12 @@ class LU {
         //\pre  true
         //\post creates a matrix NxN
 
-        ~LU();
-
-        void read();
+        void read(char c);
         //\pre  initialized NxN matrix and NxN doubles at input
+        // @param c: t use total_pivoting
+        //           p use partial_scaled_pivoting
+        //           else do not pivot
         //\post read doubles and perform descomposition LU
-        
-        void print() const;
-        //\pre true
-        //\post print content of matrix
 
         void print_L() const;
         //\pre  matrix has been descomposed
@@ -37,6 +36,6 @@ class LU {
 
         void print_P() const;
         //\pre initialized matrix
-        //\post prints P matrix        
+        //\post prints P matrix
 };
 #endif

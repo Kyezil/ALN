@@ -4,10 +4,12 @@
 class Matrix {
     private:
         double ** mat;
+    protected:
         int *rows, *cols;
-        int M, N;
         const static unsigned OUT_DIGITS = 5;
+        unsigned N, M;
     public:
+        
         Matrix();
         //\pre true
         //\post default constructor matrix 0x0

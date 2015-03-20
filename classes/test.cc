@@ -7,10 +7,10 @@ int main() {
     cin >> n;
 
     LU mat(n);
-    mat.read();
+    mat.read('p');
     mat.print_L();
     cout << std::endl;
     mat.print_U();
     cout << std::endl;
-   mat.print_P();
+    mat.print_P();
 }
