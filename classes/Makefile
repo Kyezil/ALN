@@ -1,11 +1,14 @@
-all: test.exe
+CC=g++
+CFLAGS=-c -Wall -O3
+LDFLAGS=
+SOURCES=LU.cc Matrix.cc test.cc
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=test.exe
 
-test.exe: LU.o test.o
-	g++ LU.o test.o -o test.exe
-LU.o: LU.cc
-	g++ -c LU.cc
-test.o: test.cc
-	g++ -c test.cc
+all: $(SOURCES) $(EXECUTABLE)
+	
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-clean:
-	rm *.o test.exe
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
