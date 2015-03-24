@@ -1,6 +1,5 @@
 #include "LU.hh"
-
-LU::Pos LU::partial_pivoting(Matrix& mat, const unsigned i) {
+void LU::partial_pivoting(Matrix& mat, const unsigned i) {
     double max_pivot = 0;
     unsigned pivot_row = i;
     for (int j = i; j < mat.N; ++j) {
@@ -53,9 +52,17 @@ LU::Pos LU::total_pivoting(Matrix& mat, const unsigned i) {
     return piv;
 }
 /* define Class LU */
-LU::LU() {}
+LU::LU() {
+    descomposed = false;
+}
 
-LU::LU(const unsigned n) : mat(n) {}
+LU::LU(const unsigned n) : mat(n) {
+    descomposed = false;
+}
+
+double& LU::operator()(unsigned i, unsigned j) {
+    return mat(i,j);
+}
 
 void LU::descompose(Pos (*f)(Matrix& mat, const unsigned i)){
     //For each row

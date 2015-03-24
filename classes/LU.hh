@@ -11,16 +11,16 @@ class LU {
     typedef std::pair<unsigned, unsigned> Pos;
     private:
         Matrix mat;
+        static const unsigned OUT_DIGITS = 5;
+        bool descomposed;
+    public: 
         void descompose(Pos (*f)(Matrix&, const unsigned));
         //apply Gauss reduction
-        static const unsigned OUT_DIGITS = 5;
-    public:
-       
-        static Pos partial_pivoting(Matrix& mat, const unsigned i);
+        void partial_pivoting(const unsigned i);
         //max element of row
-        static Pos partial_scaled_pivoting(Matrix& mat, const unsigned i);
+        void partial_scaled_pivoting(const unsigned i);
         //relative max element of column 
-        static Pos total_pivoting(Matrix& mat, const unsigned i);
+        void total_pivoting(const unsigned i);
         //max element
         LU();
         //\pre true
@@ -29,10 +29,13 @@ class LU {
         LU(const unsigned n);
         //\pre  true
         //\post creates a matrix NxN
+        
+        //operator for initialization of matrix
+        double& operator()(unsigned i, unsigned j);
 
         void read();
         //\pre  initialized NxN matrix and NxN doubles at input
-        //\post read doubles and perform descomposition LU
+        //\post read doubles
 
         void print_L() const;
         //\pre  matrix has been descomposed
