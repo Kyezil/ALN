@@ -1,20 +1,17 @@
 /* Class LU */
 #ifndef LU_HH
 #define LU_HH
-#include "Matrix.hh"
+#include "SQ_Matrix.hh"
 #include <cmath>
 #include <iostream>
 #include <iomanip>
 #include <utility>
 
 class LU {
-    typedef std::pair<unsigned, unsigned> Pos;
     private:
-        Matrix mat;
-        static const unsigned OUT_DIGITS = 5;
-        bool descomposed;
-    public: 
-        void descompose(Pos (*f)(Matrix&, const unsigned));
+        SQ_Matrix mat; 
+
+        void factorize();
         //apply Gauss reduction
         void partial_pivoting(const unsigned i);
         //max element of row
@@ -22,9 +19,8 @@ class LU {
         //relative max element of column 
         void total_pivoting(const unsigned i);
         //max element
-        LU();
-        //\pre true
-        //\post default constructor matrix 0x0
+    public: 
+        static const unsigned OUT_DIGITS = 5;
 
         LU(const unsigned n);
         //\pre  true
