@@ -2,17 +2,26 @@
 #ifndef LU_HH
 #define LU_HH
 #include "Matrix.hh"
-class LU : public Matrix {
+#include <cmath>
+#include <iostream>
+#include <iomanip>
+#include <utility>
+
+class LU {
+    typedef std::pair<unsigned, unsigned> Pos;
     private:
-        void descompose(void (LU::*pivot)(const unsigned i));
+        Matrix mat;
+        void descompose(Pos (*f)(Matrix&, const unsigned));
         //apply Gauss reduction
-        void partial_pivoting(const unsigned i);
-        //max element of row
-        void partial_scaled_pivoting(const unsigned i);
-        //relative max element of column 
-        void total_pivoting(const unsigned i);
-        //max element
+        static const unsigned OUT_DIGITS = 5;
     public:
+       
+        static Pos partial_pivoting(Matrix& mat, const unsigned i);
+        //max element of row
+        static Pos partial_scaled_pivoting(Matrix& mat, const unsigned i);
+        //relative max element of column 
+        static Pos total_pivoting(Matrix& mat, const unsigned i);
+        //max element
         LU();
         //\pre true
         //\post default constructor matrix 0x0
@@ -21,12 +30,8 @@ class LU : public Matrix {
         //\pre  true
         //\post creates a matrix NxN
 
-        void read(char c);
+        void read();
         //\pre  initialized NxN matrix and NxN doubles at input
-        // @param c: t use total_pivoting
-        //           s use partial_scaled_pivoting
-        //           p use partial_pivoting
-        //           else do not pivot
         //\post read doubles and perform descomposition LU
 
         void print_L() const;

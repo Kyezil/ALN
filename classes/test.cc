@@ -1,13 +1,14 @@
 #include "LU.hh"
+#include "Matrix.hh"
 #include <iostream>
 using namespace std;
 int main() {
-    int n;
+    unsigned n;
     cout << "Enter dimension of Matrix:" << endl;
     cin >> n;
-
+    
     LU mat(n);
-    mat.read('p');
+    mat.read();
     mat.print_L();
     cout << std::endl;
     mat.print_U();

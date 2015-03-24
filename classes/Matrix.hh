@@ -1,14 +1,21 @@
 /* Class Matrix */
 #ifndef MATRIX_HH
 #define MATRIX_HH
+#include <cmath>
+#include <iostream>
+#include <iomanip>
+#include <vector>
 class Matrix {
+    typedef std::vector<double> VD;
+    typedef std::vector<VD> VVD;
+    typedef std::vector<int> VI;
     private:
-        double ** mat;
+        VVD mat;
+        VI rows, cols;
     protected:
-        int *rows, *cols;
         const static unsigned OUT_DIGITS = 5;
-        unsigned N, M;
     public:
+        const unsigned M, N;
         
         Matrix();
         //\pre true
@@ -27,6 +34,9 @@ class Matrix {
         double& operator()(const unsigned i, const unsigned j);
         double operator()(const unsigned i, const unsigned j) const;
         // define operator for access
+
+        const VI& get_row_perm() const;
+        const VI& get_col_perm() const;
 
         void perm_row(const unsigned i1, const unsigned i2);
         //\pre  0 <= i1, i2 < N  i1 != i2

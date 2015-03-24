@@ -1,40 +1,36 @@
 #include "Matrix.hh"
-#include <cmath>
-#include <iostream>
-#include <iomanip>
-Matrix::Matrix() {
-    M = N = 0;
+
+Matrix::Matrix() : M(0), N(0) {
 }
 
-Matrix::Matrix(const unsigned m, const unsigned n) {
-    M = m, N = n;
-    mat = new double*[N];
-    rows = new int[N];
-    cols = new int[M];
-    for (int i = 0; i < N; ++i) {
-        mat[i] = new double[M];
+Matrix::Matrix(const unsigned m, const unsigned n) : M(m), N(n){
+    mat.reserve(M);
+    rows.reserve(M);
+    cols.reserve(N);
+    for (int i = 0; i < M; ++i) {
+        mat[i].reserve(N);
         rows[i] = i;
     }
-    for (int i = 0; i < M; ++i) cols[i] = i;
+    for (int i = 0; i < N; ++i) cols[i] = i;
 }
-Matrix::Matrix(const unsigned n) { 
-    M = N = n;
-    mat = new double*[N];
-    rows = new int[N];
-    cols = new int[N];
-    for (int i = 0; i < N; ++i) {
-        mat[i] = new double[M];
-        rows[i] = i;
-        cols[i] = i;
+Matrix::Matrix(const unsigned n) : M(n), N(n){
+    mat.reserve(N);
+    rows.reserve(N);
+    cols.reserve(N);
+    for (int i = 0; i < M; ++i) {
+        mat[i].reserve(N);
+        rows[i] = cols[i] = i;
     }
 }
-Matrix::~Matrix() {
-    for (int i = 0; i < N; ++i) delete [] mat[i];
-    delete [] mat;
-    delete [] rows;
-    delete [] cols;
+Matrix::~Matrix() {}
+
+const std::vector<int>& Matrix::get_row_perm() const{
+    return rows;
 }
 
+const std::vector<int>& Matrix::get_col_perm() const{
+    return cols;
+}
 
 void Matrix::perm_row(const unsigned i1, const unsigned i2) {
     std::swap(rows[i1], rows[i2]);
