@@ -8,6 +8,12 @@ SQ_Matrix::SQ_Matrix(const unsigned n) : N(n), rows(rows_){
         rows_[i] = i;
     }
 }
+
+SQ_Matrix::SQ_Matrix(const SQ_Matrix& mat2) : N(mat2.N), rows(rows_){
+    mat = mat2.mat;
+    rows_ = mat2.rows_;
+}
+
 SQ_Matrix::~SQ_Matrix() {}
 
 void SQ_Matrix::swap_row(const unsigned i1, const unsigned i2) {

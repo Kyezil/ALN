@@ -21,6 +21,10 @@ class SQ_Matrix {
         SQ_Matrix(const unsigned n);
         //\pre  true
         //\post creates a matrix NxN
+        
+        SQ_Matrix(const SQ_Matrix& mat);
+        //\pre true
+        //\post copy constructor
 
         ~SQ_Matrix();
 
