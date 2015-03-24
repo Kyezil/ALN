@@ -1,5 +1,7 @@
 #include "SQ_Matrix.hh"
 
+SQ_Matrix::SQ_Matrix() : N(0), rows(rows_){}
+
 SQ_Matrix::SQ_Matrix(const unsigned n) : N(n), rows(rows_){
     mat.reserve(N);
     rows_.reserve(N);

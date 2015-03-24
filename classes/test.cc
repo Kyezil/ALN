@@ -13,4 +13,6 @@ int main() {
     mat.print_U();
     cout << std::endl;
     mat.print_P();
+    cout << std::endl;
+    mat.check();
 }

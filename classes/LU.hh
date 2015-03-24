@@ -9,23 +9,22 @@
 
 class LU {
     private:
-        SQ_Matrix mat; 
-
+        SQ_Matrix mat;
         void factorize();
         //apply Gauss reduction
         void partial_pivoting(const unsigned i);
         //max element of row
         void partial_scaled_pivoting(const unsigned i);
-        //relative max element of column 
+        //relative max element of column
         void total_pivoting(const unsigned i);
         //max element
-    public: 
+    public:
         static const unsigned OUT_DIGITS = 5;
 
         LU(const unsigned n);
         //\pre  true
         //\post creates a matrix NxN
-        
+
         //operator for initialization of matrix
         double& operator()(unsigned i, unsigned j);
 
@@ -44,5 +43,9 @@ class LU {
         void print_P() const;
         //\pre initialized matrix
         //\post prints P matrix
+
+        void check() const;
+        //\pre matrix has been descomposed
+        //\post print A ~ P'*L*U
 };
 #endif

@@ -116,3 +116,25 @@ void LU::print_P() const {
         std::cout << std::endl;
     }
 }
+
+void LU::check() const {
+    std::cout << "Matrix P'LU" << std::endl;
+    std::vector<int> P2 (mat.N);
+    for (int i = 0; i < mat.N; ++i) P2[mat.rows[i]] = i;
+
+    for (int i = 0; i < mat.N; ++i) {
+        //Multiplication
+        for (int j = 0; j < mat.N; ++j) {
+            std::cout << std::right << std::setw(10);
+            double elem = 0;
+            int k = 0;
+            while (k < P2[i] and k <= j) {
+                elem += mat(P2[i],k)*mat(k,j);
+                ++k;
+            }
+            if (P2[i] <= j) elem += mat(P2[i],j);
+            std::cout << elem;
+        }
+        std::cout << std::endl;
+    }
+}
