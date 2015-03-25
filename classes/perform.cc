@@ -9,34 +9,21 @@ double gettime_hp();
 
 int main()
 {
-    enum { N = 5*1024*1024 };
+    int N;
+    while (cin >> N) {
     LU a(N);
-    int i,j;
-    for(  j=0 ; j<8 ; ++j )
-    {
-        for(  i=0 ; i<N ; ++i )
-            a(i,j)=rand();
 
-        double* a1 = &a[0], *b1 = &b[0], *c1 = &c[0] ;
-        double dtime=gettime_hp();
-        for(  i=0 ; i<N ; ++i ) c1[i] = a1[i] * b1[i] ;
-        dtime=gettime_hp()-dtime;
-        cout << "double operator* " << dtime << " ms\n" ;
-
-        dtime=gettime_hp();
-        c = a*b ;
-        dtime=gettime_hp()-dtime;
-        cout << "valarray operator* " << dtime << " ms\n" ;
-
-        dtime=gettime_hp();
-        for(  i=0 ; i<N ; ++i ) c[i] = a[i] * b[i] ;
-        dtime=gettime_hp()-dtime;
-        cout << "valarray[i] operator* " << dtime<< " ms\n" ;
-
-        cout << "------------------------------------------------------\n" ;
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            a(i,j) = rand();
+        }
+    }
+    double dtime=gettime_hp();
+    a.factorize();
+    dtime=gettime_hp()-dtime;
+    cout << "Needed time " << dtime << " ms\n" ;
     }
 }
-
 double gettime_hp()
 {
     struct timespec timestamp;

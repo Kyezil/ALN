@@ -3,10 +3,10 @@
 SQ_Matrix::SQ_Matrix() : N(0), rows(rows_){}
 
 SQ_Matrix::SQ_Matrix(const unsigned n) : N(n), rows(rows_){
-    mat.reserve(N);
-    rows_.reserve(N);
+    mat.resize(N);
+    rows_.resize(N);
     for (int i = 0; i < N; ++i) {
-        mat[i].reserve(N);
+        mat[i].resize(N);
         rows_[i] = i;
     }
 }
@@ -16,12 +16,13 @@ SQ_Matrix::SQ_Matrix(const SQ_Matrix& mat2) : N(mat2.N), rows(rows_){
     rows_ = mat2.rows_;
 }
 
-SQ_Matrix::~SQ_Matrix() {}
+SQ_Matrix::~SQ_Matrix() {
+}
 
 void SQ_Matrix::swap_row(const unsigned i1, const unsigned i2) {
     std::swap(rows_[i1], rows_[i2]);
     std::swap(mat[i1], mat[i2]);
-    std::clog << "Swapped rows " << i1 << " and " << i2 << std::endl;
+//    std::clog << "Swapped rows " << i1 << " and " << i2 << std::endl;
 }
 
 double& SQ_Matrix::operator()(const unsigned i, const unsigned j) {

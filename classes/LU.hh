@@ -10,7 +10,6 @@
 class LU {
     private:
         SQ_Matrix mat;
-        void factorize();
         //apply Gauss reduction
         void partial_pivoting(const unsigned i);
         //max element of row
@@ -20,6 +19,7 @@ class LU {
         //max element
     public:
         static const unsigned OUT_DIGITS = 5;
+        void factorize();
 
         LU(const unsigned n);
         //\pre  true

@@ -16,7 +16,7 @@ class SQ_Matrix {
         const static unsigned OUT_DIGITS = 5;
     public:
         const unsigned N;
-        const VI& rows;;
+        const VI& rows;
 
         SQ_Matrix();
 

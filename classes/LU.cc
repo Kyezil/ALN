@@ -12,7 +12,7 @@ void LU::partial_pivoting(const unsigned i) {
             pivot_row = j;
         }
     }
-    if(pivot_row != i) mat.swap_row(pivot_row, i);
+    if(pivot_row != i) mat.swap_row(i, pivot_row);
 }
 
 void LU::partial_scaled_pivoting(const unsigned i) {
@@ -30,7 +30,7 @@ void LU::partial_scaled_pivoting(const unsigned i) {
             pivot_row = j;
         }
     }
-    if (pivot_row != i) mat.swap_row(pivot_row, i);
+    if (pivot_row != i) mat.swap_row(i, pivot_row);
 }
 
 void LU::total_pivoting(const unsigned i) {
@@ -46,8 +46,8 @@ void LU::total_pivoting(const unsigned i) {
             }
         }
     }
-    if(pivot_row != i) mat.swap_row(pivot_row, i);
-    //if(pivot_col != i) mat.swap_col(pivot_col, i);
+    if(pivot_row != i) mat.swap_row(i, pivot_row);
+    //if(pivot_col != i) mat.swap_col(i, pivot_col);
 }
 /* define Class LU */
 
