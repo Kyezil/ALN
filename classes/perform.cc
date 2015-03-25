@@ -1,6 +1,4 @@
 #include <iostream>
-#include <valarray>
-#include <iostream>
 #include <ctime>
 #include "LU.hh"
 using namespace std ;
