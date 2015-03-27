@@ -1,11 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
-double abs(double x) {
-    if (x < 0) return -x;
-    else return x;
-}
+#include <cmath>
 
 typedef std::vector<std::vector<double> > Matriu;
 
@@ -47,14 +43,13 @@ int main() {
         //pivotatge si cal
         {
             int pivot_row = i;
-
             double pivot = 0;
             for (unsigned j = i; j < dim; ++j) {
                 // maxim de la fila j
-                double max = abs(A[i][j]);
+                double max = std::fabs(A[i][j]);
                 for (unsigned k = j+1; k < dim; ++k)
-                    if(abs(A[j][k]) > max) max = abs(A[j][k]);
-                max = abs(A[j][i])/max;
+                    if(std::fabs(A[j][k]) > max) max = std::fabs(A[j][k]);
+                max = std::fabs(A[j][i])/max;
                 if (max > pivot) pivot = max, pivot_row = j;
             }
 
@@ -79,7 +74,7 @@ int main() {
     std::ofstream matriu_out("matrius_LU.dat");
     for (unsigned i = 0; i < dim; ++i) {
         matriu_out << A[i][i];
-        for (unsigned j = 1; j < dim; ++j) matriu_out << ' ' << A[i][j];
+        for (unsigned j = 1; j < dim; ++j) matriu_out << '\t' << A[i][j];
         matriu_out << '\n';
     }
     std::clog << "-- Fi escriptura de la matriu --" << std::endl;
@@ -91,7 +86,7 @@ int main() {
     std::clog << "    - det A = " << detA << std::endl;
     std::clog << "-- Fi calcul det A --" << std::endl;
 
-    if (abs(detA) > 1.e-8) {
+    if (std::fabs(detA) > 1.e-8) {
         std::clog << "*- Calcul inversa de A --" << std::endl;
         // Solve AX = I  <=>  PAX = PI = P  <=>  LUX = P <=> {LY = P and UX = Y}
         std::clog << "    - LY = P" << std::endl;
