@@ -9,6 +9,7 @@ int main() {
     /* Tipus bàsic */
     Matriu A;
     std::vector<int> row;
+    bool signP = false; // signe of permutation, aka detP
 
     /* Llegir matriu_A.dat */
     std::ifstream matriu_in("matriu_A.dat");
@@ -57,6 +58,7 @@ int main() {
                 A[i].swap(A[pivot_row]);
                 std::swap(row[i], row[pivot_row]);
                 std::clog << "    Files " << i << " <-> " << pivot_row << std::endl;
+                signP = not signP;
             }
         }
 
@@ -81,7 +83,7 @@ int main() {
 
     /* Determinant de A */
     std::clog << "*- Calcul det A --" << std::endl;
-    double detA = 1;
+    double detA = (signP)? -1 : 1;
     for (unsigned i = 0; i < dim; ++i) detA *= A[i][i];
     std::clog << "    - det A = " << detA << std::endl;
     std::clog << "-- Fi calcul det A --" << std::endl;
