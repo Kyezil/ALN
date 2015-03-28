@@ -7,7 +7,7 @@ typedef std::vector<std::vector<double> > Matriu;
 
 int main() {
     /* Tipus bàsic */
-    Matriu A;
+    Matriu A, A1; //matriu i la seva inversa
     std::vector<int> row;
     bool signP = false; // signe of permutation, aka detP
 
@@ -19,13 +19,15 @@ int main() {
         matriu_in >> dim;
         std::clog << "    - dimensió de A: " << dim << std::endl;
         A.resize(dim);
-        row.resize(dim);
+        row.reserve(dim);
         // llegeix matriu A
         for (unsigned i = 0; i < dim; ++i) {
-            A[i].resize(dim);
-            row[i] = i;
+            A[i].reserve(dim);
+            row.push_back(i);
             for (unsigned j = 0; j < dim; ++j) {
-                matriu_in >> A[i][j];
+                double x;
+                matriu_in >> x;
+                A[i].push_back(x);
             }
         }
         matriu_in.close(); //tanca el flux
@@ -89,9 +91,9 @@ int main() {
     std::clog << "-- Fi calcul det A --" << std::endl;
 
     if (std::fabs(detA) > 1.e-8) {
+        A1.resize(dim);
         std::clog << "*- Calcul inversa de A --" << std::endl;
-        // Solve AX = I  <=>  PAX = PI = P  <=>  LUX = P <=> {LY = P and UX = Y}
-        std::clog << "    - LY = P" << std::endl;
-        
+        // Solve AX = I  <=>  PAX = P  <=>  LUXPt = I <=> {LY=I , UZ=Y, X=ZP}
+        std::clog << "    - LY = I" << std::endl;
     }
 }
