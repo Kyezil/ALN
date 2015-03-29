@@ -1,40 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stdexcept>
+#include <cassert>
 #include <cmath>
 
 typedef std::vector<std::vector<double> > Matriu;
-
-void print(const Matriu& m) {
-    unsigned dim = m.size();
-    for (unsigned i = 0; i < dim; ++i) {
-        for (unsigned j = 0; j < dim; ++j) std::cerr << m[i][j] << ' ';
-        std::cerr << std::endl;
-    }
-}
-void print_L(const Matriu& m) {
-    unsigned dim = m.size();
-    for (unsigned i = 0; i < dim; ++i) {
-        for(unsigned j = 0; j < dim; ++j) {
-            if (j > i) std::cout << 0;
-            else if (j == i) std::cout << 1;
-            else std::cout << m[i][j];
-            std::cout << ' ';
-        }
-        std::cout << std::endl;
-    }
-}
-void print_U(const Matriu& m) {
-    unsigned dim = m.size();
-    for (unsigned i = 0; i < dim; ++i) {
-        for(unsigned j = 0; j < dim; ++j) {
-            if (i > j) std::cout << 0;
-            else std::cout << m[i][j];
-            std::cout << ' ';
-        }
-        std::cout << std::endl;
-    }
-}
 
 int main() {
     /* Tipus bàsic */
@@ -63,7 +34,7 @@ int main() {
         }
         matriu_in.close(); //tanca el flux
     }
-    else std::cerr << "!!!Problema llegint matriu_A.dat!!!" << std::endl;
+    else throw std::runtime_error("!!!Problema llegint matriu_A.dat!!!"); 
     std::clog << "-- Fi lectura de la matriu A --" << std::endl;
 
     /* Copia de A */
@@ -171,7 +142,7 @@ int main() {
                 inversa << '\n';
             }
         }
-        else std::cerr << "!!! Error d'escriptura !!!" << std::endl;
+        else throw std::runtime_error("!!! Error d'escriptura !!!");
         std::clog << "-- Fi escriptura de la inversa" << std::endl;
     }
     else std::clog << "! Det A < 1.e-8 !" << std::endl;
@@ -248,12 +219,13 @@ int main() {
     std::ifstream vec_in;
     vec_in.open("vector_b.dat");
     if (vec_in.is_open()) {
-        unsigned dimB;
-        vec_in >> dimB;
-        for (unsigned i = 0; i < dimB; ++i) vec_in >> b[perm[i]];
+        unsigned dim_b;
+        vec_in >> dim_b;
+        assert(dim_b == dim);
+        for (unsigned i = 0; i < dim; ++i) vec_in >> b[perm[i]];
         vec_in.close();
     }
-    else std::cerr << "!!!Problema llegint vector_b.dat!!!" << std::endl;
+    else throw std::runtime_error("!!!Problema llegint vector_b.dat!!!");
     std::clog << "-- Fi lectura de b" << std::endl;
 
     std::clog << "*- Càlcul Ax = b" << std::endl;
@@ -286,7 +258,7 @@ int main() {
         if (vec_out.is_open()) {
             for (unsigned i = 0; i < dim; ++i) vec_out << x[i] << '\n';
         }
-        else std::cerr << "!!!Problema escrivint sol_Axb.dat" << std::endl;
+        else throw std::runtime_error("!!!Problema escrivint sol_Axb.dat");
     }
     
     std::clog << "*- Inici d'output 2" << std::endl;
