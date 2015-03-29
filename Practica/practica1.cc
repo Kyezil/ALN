@@ -5,6 +5,37 @@
 
 typedef std::vector<std::vector<double> > Matriu;
 
+void print(const Matriu& m) {
+    unsigned dim = m.size();
+    for (unsigned i = 0; i < dim; ++i) {
+        for (unsigned j = 0; j < dim; ++j) std::cerr << m[i][j] << ' ';
+        std::cerr << std::endl;
+    }
+}
+void print_L(const Matriu& m) {
+    unsigned dim = m.size();
+    for (unsigned i = 0; i < dim; ++i) {
+        for(unsigned j = 0; j < dim; ++j) {
+            if (j > i) std::cout << 0;
+            else if (j == i) std::cout << 1;
+            else std::cout << m[i][j];
+            std::cout << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+void print_U(const Matriu& m) {
+    unsigned dim = m.size();
+    for (unsigned i = 0; i < dim; ++i) {
+        for(unsigned j = 0; j < dim; ++j) {
+            if (i > j) std::cout << 0;
+            else std::cout << m[i][j];
+            std::cout << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main() {
     /* Tipus bàsic */
     Matriu A, A1, Ac; //matriu i la seva inversa
