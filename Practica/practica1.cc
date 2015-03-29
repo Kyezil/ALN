@@ -138,4 +138,62 @@ int main() {
         else std::cerr << "!!! Error d'escriptura !!!" << std::endl;
         std::clog << "-- Fi escriptura de la inversa" << std::endl;
     }
+    else std::clog << "! Det A < 1.e-8 !" << std::endl;
+
+    std::clog << "*- Inici d'output" << std::endl;
+    std::clog << "   - det A" << std::endl;
+    std::cout << "det A = " << detA << std::endl;
+    std::clog << "   - ||A||1" << std::endl;
+    //maximum absolut column sum;
+    double norm1 = 0;
+    for (unsigned j = 0; j < dim; ++j) {
+        double sum_j = 0;
+        for (unsigned i = 0; i < dim; ++i) sum_j += std::fabs(A[i][j]);
+        if (sum_j > norm1) norm1 = sum_j;
+    }
+    std::cout << "||A||1 = " << norm1 << std::endl;
+
+    std::clog << "   - ||A||infty" << std::endl;
+    double normInf = 0;
+    for (unsigned i = 0; i < dim; ++i) {
+        double sum_i = 0;
+        for (unsigned j = 0; j < dim; ++j) sum_i += std::fabs(A[i][j]);
+        if (sum_i > norm1) normInf = sum_i;
+    }
+    std::cout << "||A||infty = " << normInf << std::endl;
+
+    std::clog << "   - ||PA - LU||infty" << std::endl;
+    {
+        std::vector<int> perm (dim);
+        for (unsigned i = 0; i < dim; ++i) perm[row[i]] = i;
+        unsigned k = 0;
+        while (k < dim) {
+            if (perm[k] != k) {
+                Ac[k].swap(Ac[perm[k]]);
+                std::swap(perm[k], perm[perm[k]]);
+            }
+            else ++k;
+        }
+    }
+
+    double normErrorInf = 0;
+    {
+        for (unsigned i = 0; i < dim; ++i) {
+            double sum_i = 0;
+            for (unsigned j = 0; j < dim; ++j) {
+                unsigned k = j+1;
+                double element = 0;
+                if (j >= i) {
+                    element = A[i][j];
+                    k = i;
+                }
+                for (unsigned l = 0; l < k; ++l)
+                    element += A[i][l]*A[l][j];
+                sum_i += std::fabs(Ac[i][j] - element);
+            }
+            if (sum_i > normErrorInf) normErrorInf = sum_i;
+        }
+    }
+    std::cout << "||PA-LU||infty = " << normErrorInf << std::endl;
+    std::clog << "-- Fi d'output" << std::endl;
 }
