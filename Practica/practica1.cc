@@ -39,7 +39,7 @@ void print_U(const Matriu& m) {
 int main() {
     /* Tipus bàsic */
     Matriu A, A1, Ac; //matriu i la seva inversa
-    std::vector<int> row;
+    std::vector<unsigned> row;
     bool signP = false; // signe of permutation, aka detP
     double detA;
     /* Llegir matriu_A.dat */
@@ -104,6 +104,11 @@ int main() {
     }
     std::clog << "-- Fi descomposició LU de A --" << std::endl;
 
+    std::clog << "*- Càlcul del vector de permutació" << std::endl;
+    std::vector<unsigned> perm (dim);
+    for (unsigned i = 0; i < dim; ++i) perm[row[i]] = i;
+    std::clog << "-- Fi càlcul vector de permutació" << std::endl;
+
     /* Escriure resultat */
     std::clog << "*- Escriptura de la matriu --" << std::endl;
     std::ofstream matriu_out("matrius_LU.dat");
@@ -149,12 +154,12 @@ int main() {
             }
         }
         std::clog << "    - ZP = X" << std::endl;
-        std::vector<int> perm = row;
+        std::vector<unsigned> perm_i = row;
         unsigned k = 0;
         while (k < dim) {
-            if (perm[k] != k) {
-                A1[k].swap(A1[perm[k]]);
-                std::swap(perm[k], perm[perm[k]]);
+            if (perm_i[k] != k) {
+                A1[k].swap(A1[perm_i[k]]);
+                std::swap(perm_i[k], perm_i[perm_i[k]]);
             }
             else ++k;
         }
@@ -195,13 +200,12 @@ int main() {
 
     std::clog << "   - ||PA - LU||infty" << std::endl;
     {
-        std::vector<int> perm (dim);
-        for (unsigned i = 0; i < dim; ++i) perm[row[i]] = i;
+        std::vector<unsigned> perm_i = perm;
         unsigned k = 0;
         while (k < dim) {
-            if (perm[k] != k) {
-                Ac[k].swap(Ac[perm[k]]);
-                std::swap(perm[k], perm[perm[k]]);
+            if (perm_i[k] != k) {
+                Ac[k].swap(Ac[perm_i[k]]);
+                std::swap(perm_i[k], perm_i[perm_i[k]]);
             }
             else ++k;
         }
@@ -227,4 +231,51 @@ int main() {
     }
     std::cout << "||PA-LU||infty = " << normErrorInf << std::endl;
     std::clog << "-- Fi d'output" << std::endl;
+
+
+    std::clog << "*- Lectura de b" << std::endl;
+    std::vector<double> b(dim);
+    std::ifstream vec_in;
+    vec_in.open("vector_b.dat");
+    if (vec_in.is_open()) {
+        unsigned dimB;
+        vec_in >> dimB;
+        for (unsigned i = 0; i < dimB; ++i) vec_in >> b[perm[i]];
+        vec_in.close();
+    }
+    else std::cerr << "!!!Problema llegint vector_b.dat!!!" << std::endl;
+    std::clog << "-- Fi lectura de b" << std::endl;
+
+    std::clog << "*- Càlcul Ax = b" << std::endl;
+    std::clog << "   - Ly = b" << std::endl;
+    std::vector<double> x; //y = x
+    {
+        x.reserve(dim);
+        x.push_back(b[0]);
+        for (unsigned i = 1; i < dim; ++i) {
+            double sum = 0;
+            for (unsigned j = 0; j < i; ++j) sum += A[i][j]*x[j];
+            x[i] = b[i] - sum;
+        }
+
+        std::clog << "   - Ux = y" << std::endl;
+        int i = dim-1;
+        x[i] = x[i]/A[i][i];
+        while (--i >= 0) {
+            double sum = 0;
+            for (unsigned j = i+1; j < dim; ++j) sum += A[i][j]*x[j];
+            x[i] = (x[i] - sum)/A[i][i];
+        }
+    }
+    std::clog << "-- Fi càlcul Ax=b" << std::endl;
+    
+    std::clog << "*- Escriptura de x" << std::endl;
+    {
+        std::ofstream vec_out;
+        vec_out.open("sol_Axb.dat");
+        if (vec_out.is_open()) {
+            for (unsigned i = 0; i < dim; ++i) vec_out << x[i] << '\n';
+        }
+        else std::cerr << "!!!Problema escrivint sol_Axb.dat" << std::endl;
+    }
 }

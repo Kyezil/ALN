@@ -13,4 +13,4 @@ $(EXECUTABLE): $(OBJECTS)
 .cpp.o:
 	$(CC) $(CFLAGS) $< -o $@
 clean:
-	rm main.exe matrius_LU.dat inversa_A.dat
+	rm main.exe matrius_LU.dat inversa_A.dat sol_Axb.dat
