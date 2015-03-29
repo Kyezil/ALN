@@ -7,10 +7,10 @@ typedef std::vector<std::vector<double> > Matriu;
 
 int main() {
     /* Tipus bàsic */
-    Matriu A, A1; //matriu i la seva inversa
+    Matriu A, A1, Ac; //matriu i la seva inversa
     std::vector<int> row;
     bool signP = false; // signe of permutation, aka detP
-
+    double detA;
     /* Llegir matriu_A.dat */
     std::ifstream matriu_in("matriu_A.dat");
     std::clog << "*- Lectura de la matriu A --" << std::endl;
@@ -37,7 +37,7 @@ int main() {
 
     /* Copia de A */
     std::clog << "*- Copia de la matriu A --" << std::endl;
-    Matriu Ac = A;
+    Ac = A;
     std::clog << "-- Fi copia de la matriu A --" << std::endl;
 
     /* Descomposició LU */
@@ -77,7 +77,7 @@ int main() {
     std::clog << "*- Escriptura de la matriu --" << std::endl;
     std::ofstream matriu_out("matrius_LU.dat");
     for (unsigned i = 0; i < dim; ++i) {
-        matriu_out << A[i][i];
+        matriu_out << A[i][0];
         for (unsigned j = 1; j < dim; ++j) matriu_out << ' ' << A[i][j];
         matriu_out << '\n';
     }
@@ -85,7 +85,7 @@ int main() {
 
     /* Determinant de A */
     std::clog << "*- Calcul det A --" << std::endl;
-    double detA = (signP)? -1 : 1;
+    detA = (signP)? -1 : 1;
     for (unsigned i = 0; i < dim; ++i) detA *= A[i][i];
     std::clog << "    - det A = " << detA << std::endl;
     std::clog << "-- Fi calcul det A --" << std::endl;
