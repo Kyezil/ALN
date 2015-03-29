@@ -189,16 +189,16 @@ int main() {
     }
     std::cout << "||A||1 = " << norm1 << std::endl;
 
-    std::clog << "   - ||A||infty" << std::endl;
+    std::clog << "   - ||A||inf" << std::endl;
     double normInf = 0;
     for (unsigned i = 0; i < dim; ++i) {
         double sum_i = 0;
         for (unsigned j = 0; j < dim; ++j) sum_i += std::fabs(A[i][j]);
         if (sum_i > norm1) normInf = sum_i;
     }
-    std::cout << "||A||infty = " << normInf << std::endl;
+    std::cout << "||A||inf = " << normInf << std::endl;
 
-    std::clog << "   - ||PA - LU||infty" << std::endl;
+    std::clog << "   - ||PA - LU||inf" << std::endl;
     {
         std::vector<unsigned> perm_i = perm;
         unsigned k = 0;
@@ -239,7 +239,7 @@ int main() {
             if (sum_i > normErrorInf) normErrorInf = sum_i;
         }
     }
-    std::cout << "||PA-LU||infty = " << normErrorInf << std::endl;
+    std::cout << "||PA-LU||inf = " << normErrorInf << std::endl;
     std::clog << "-- Fi d'output" << std::endl;
 
 
@@ -290,6 +290,20 @@ int main() {
     }
     
     std::clog << "*- Inici d'output 2" << std::endl;
-    std::clog << "   - ||Ax - b||1" << std::endl;
-    // norm(Ax-b) = norm(PAx-Pb) = norm(LUx - b)
+    double errorX_1 = 0, errorX_2 = 0, errorX_inf = 0;
+    // norm(Ax-b') = norm(PAx-Pb') = norm(LUx - b)
+    {
+        for (unsigned i = 0; i < dim; ++i) {
+            double el = 0;
+            for (unsigned j = 0; j < dim; ++j) el += LU[i][j]*x[j];
+            el = std::fabs(el - b[i]);
+            errorX_1 += el;
+            errorX_2 += std::pow(el,2);
+            if (el > errorX_inf) errorX_inf = el;
+        }
+        errorX_2 = std::sqrt(errorX_2);
+    }
+    std::cout << "||Ax - b||1 = " << errorX_1 << std::endl;
+    std::cout << "||Ax - b||2 = " << errorX_2 << std::endl;
+    std::cout << "||Ax - b||inf = " << errorX_inf << std::endl;
 }
