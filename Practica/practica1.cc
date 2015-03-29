@@ -211,10 +211,12 @@ int main() {
         }
     }
 
-    double normErrorInf = 0;
+    Matriu LU;
+    LU.resize(dim);
+    std::clog << "    - matriu LU" << std::endl;
     {
         for (unsigned i = 0; i < dim; ++i) {
-            double sum_i = 0;
+            LU[i].reserve(dim);
             for (unsigned j = 0; j < dim; ++j) {
                 unsigned k = j+1;
                 double element = 0;
@@ -224,8 +226,16 @@ int main() {
                 }
                 for (unsigned l = 0; l < k; ++l)
                     element += A[i][l]*A[l][j];
-                sum_i += std::fabs(Ac[i][j] - element);
+                LU[i][j] = element;
             }
+        }
+    }
+        double normErrorInf = 0;
+    {
+        for (unsigned i = 0; i < dim; ++i) {
+            double sum_i = 0;
+            for (unsigned j = 0; j < dim; ++j)
+                sum_i += std::fabs(Ac[i][j] - LU[i][j]);
             if (sum_i > normErrorInf) normErrorInf = sum_i;
         }
     }
@@ -278,4 +288,8 @@ int main() {
         }
         else std::cerr << "!!!Problema escrivint sol_Axb.dat" << std::endl;
     }
+    
+    std::clog << "*- Inici d'output 2" << std::endl;
+    std::clog << "   - ||Ax - b||1" << std::endl;
+    // norm(Ax-b) = norm(PAx-Pb) = norm(LUx - b)
 }
