@@ -78,7 +78,7 @@ int main() {
     std::ofstream matriu_out("matrius_LU.dat");
     for (unsigned i = 0; i < dim; ++i) {
         matriu_out << A[i][i];
-        for (unsigned j = 1; j < dim; ++j) matriu_out << '\t' << A[i][j];
+        for (unsigned j = 1; j < dim; ++j) matriu_out << ' ' << A[i][j];
         matriu_out << '\n';
     }
     std::clog << "-- Fi escriptura de la matriu --" << std::endl;
@@ -95,5 +95,47 @@ int main() {
         std::clog << "*- Calcul inversa de A --" << std::endl;
         // Solve AX = I  <=>  PAX = P  <=>  LUXPt = I <=> {LY=I , UZ=Y, X=ZP}
         std::clog << "    - LY = I" << std::endl;
+        for (unsigned j = 0; j < dim; ++j) {
+            A1[j].reserve(dim);
+            unsigned i = 0;
+            while (i++ < j) A1[j].push_back(0);
+            A1[j].push_back(1);
+            while (i < dim) {
+                double y = 0;
+                for (int s = j; s < dim; ++s) y -= A[i][s]*A1[j][s];
+                A1[j].push_back(y);
+                ++i;
+            }
+        }
+        std::clog << "    - UZ = Y" << std::endl;
+        for (unsigned j = 0; j < dim; ++j) {
+            int k = dim-1;
+            A1[j][k] /= A[k][k];
+            while (--k >= 0) {
+                double x = 0;
+                for (unsigned s = k+1; s < dim; ++s) x += A[k][s]*A1[j][s];
+                A1[j][k] = (A1[j][k] - x)/A[k][k];
+            }
+        }
+        std::clog << "    - ZP = X" << std::endl;
+        std::vector<int> perm = row;
+        unsigned k = 0;
+        while (k < dim) {
+            if (perm[k] != k) {
+                A1[k].swap(A1[perm[k]]);
+                std::swap(perm[k], perm[perm[k]]);
+            }
+            else ++k;
+        }
+        std::clog << "*- Escriptura de la inversa" << std::endl;
+        std::ofstream inversa("inversa_A.dat");
+        if (inversa.is_open()) {
+            for (unsigned j = 0; j < dim; ++j) {
+                for (unsigned i = 0; i < dim; ++i) inversa << A1[i][j] << ' ';
+                inversa << '\n';
+            }
+        }
+        else std::cerr << "!!! Error d'escriptura !!!" << std::endl;
+        std::clog << "-- Fi escriptura de la inversa" << std::endl;
     }
 }
