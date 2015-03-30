@@ -67,7 +67,7 @@ int main() {
     for (unsigned i = 0; i < dim; ++i) { //per a cada fila
         //pivotatge si cal
         {
-            int pivot_row = i;
+            unsigned pivot_row = i;
             double pivot = 0;
             for (unsigned j = i; j < dim; ++j) {
                 // maxim de la fila j
@@ -125,11 +125,12 @@ int main() {
         for (unsigned j = 0; j < dim; ++j) {
             A1[j].reserve(dim);
             unsigned i = 0;
-            while (i++ < j) A1[j].push_back(0);
-            A1[j].push_back(1);
+            while (i < j) A1[j].push_back(0), ++i;
+            A1[j].push_back(1), ++i;
+            //i = j+1
             while (i < dim) {
                 double y = 0;
-                for (int s = j; s < dim; ++s) y -= A[i][s]*A1[j][s];
+                for (unsigned s = j; s < i; ++s) y -= A[i][s]*A1[j][s];
                 A1[j].push_back(y);
                 ++i;
             }
@@ -217,7 +218,7 @@ int main() {
                 }
                 for (unsigned l = 0; l < k; ++l)
                     element += A[i][l]*A[l][j];
-                LU[i][j] = element;
+                LU[i].push_back(element);
             }
         }
     }
@@ -257,7 +258,7 @@ int main() {
         for (unsigned i = 1; i < dim; ++i) {
             double sum = 0;
             for (unsigned j = 0; j < i; ++j) sum += A[i][j]*x[j];
-            x[i] = b[i] - sum;
+            x.push_back(b[i] - sum);
         }
 
         std::clog << "   - Ux = y" << std::endl;
