@@ -1,15 +1,6 @@
-CXX=g++
-CXXFLAGS=-c -Wall -Wextra -pedantic-errors -std=c++11
-SRC=practica1.cc
-OBJ=$(SRC:.cc=.o)
-EXECUTABLE=main.exe
-
-all: $(SRC) $(EXECUTABLE)
+all: main.exe
 	
-$(EXECUTABLE): $(OBJ)
-	$(CXX) $(OBJ) -o $@
-
-.cc.o:
-	$(CXX) $(CXXFLAGS) $< -o $@
+main.exe: main.cc
+	g++ -std=c++11 main.cc -o main.exe
 clean:
-	rm main.exe matrius_LU.dat inversa_A.dat sol_Axb.dat
+	rm main.exe
