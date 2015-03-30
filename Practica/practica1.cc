@@ -4,10 +4,30 @@
 #include <stdexcept>
 #include <cassert>
 #include <cmath>
+#include <chrono>
+
+struct timer {
+    typedef std::chrono::high_resolution_clock::time_point t;
+    private: t t1, t2;
+    public :
+        void start() {
+            t1 = std::chrono::high_resolution_clock::now();
+        }
+        void stop() {
+            t2 = std::chrono::high_resolution_clock::now();
+        }
+        void time() {
+            std::cout << "Temps d'execució : " <<
+            std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() / 1.0e3L
+            << " ms" << std::endl;
+        }
+};
 
 typedef std::vector<std::vector<double> > Matriu;
 
 int main() {
+    timer timing;
+    timing.start();
     /* Tipus bàsic */
     Matriu A, A1, Ac; //matriu i la seva inversa
     std::vector<unsigned> row;
@@ -16,7 +36,7 @@ int main() {
     /* Llegir matriu_A.dat */
     std::ifstream matriu_in("matriu_A.dat");
     std::clog << "*- Lectura de la matriu A --" << std::endl;
-    int dim = 0;
+    unsigned dim = 0;
     if (matriu_in.is_open()) {
         matriu_in >> dim;
         std::clog << "    - dimensió de A: " << dim << std::endl;
@@ -278,4 +298,6 @@ int main() {
     std::cout << "||Ax - b||1 = " << errorX_1 << std::endl;
     std::cout << "||Ax - b||2 = " << errorX_2 << std::endl;
     std::cout << "||Ax - b||inf = " << errorX_inf << std::endl;
+    timing.stop();
+    timing.time();
 }

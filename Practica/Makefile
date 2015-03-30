@@ -1,16 +1,15 @@
-CC=g++
-CFLAGS=-c -Wall -std=c++11
-LDFLAGS=
-SOURCES=practica1.cc
-OBJECTS=$(SOURCES:.cpp=.o)
+CXX=g++
+CXXFLAGS=-c -Wall -Wextra -pedantic-errors -std=c++11
+SRC=practica1.cc
+OBJ=$(SRC:.cc=.o)
 EXECUTABLE=main.exe
 
-all: $(SOURCES) $(EXECUTABLE)
+all: $(SRC) $(EXECUTABLE)
 	
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+$(EXECUTABLE): $(OBJ)
+	$(CXX) $(OBJ) -o $@
 
-.cpp.o:
-	$(CC) $(CFLAGS) $< -o $@
+.cc.o:
+	$(CXX) $(CXXFLAGS) $< -o $@
 clean:
 	rm main.exe matrius_LU.dat inversa_A.dat sol_Axb.dat
