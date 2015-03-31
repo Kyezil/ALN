@@ -176,7 +176,7 @@ int main() {
     double norm1 = 0;
     for (unsigned j = 0; j < dim; ++j) {
         double sum_j = 0;
-        for (unsigned i = 0; i < dim; ++i) sum_j += std::fabs(A[i][j]);
+        for (unsigned i = 0; i < dim; ++i) sum_j += std::fabs(Ac[i][j]);
         if (sum_j > norm1) norm1 = sum_j;
     }
     std::cout << "||A||1 = " << norm1 << std::endl;
@@ -185,8 +185,8 @@ int main() {
     double normInf = 0;
     for (unsigned i = 0; i < dim; ++i) {
         double sum_i = 0;
-        for (unsigned j = 0; j < dim; ++j) sum_i += std::fabs(A[i][j]);
-        if (sum_i > norm1) normInf = sum_i;
+        for (unsigned j = 0; j < dim; ++j) sum_i += std::fabs(Ac[i][j]);
+        if (sum_i > normInf) normInf = sum_i;
     }
     std::cout << "||A||inf = " << normInf << std::endl;
 
