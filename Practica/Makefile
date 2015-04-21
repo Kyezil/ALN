@@ -1,6 +1,6 @@
-all: main.exe
+all: main.out
 	
-main.exe: main.cc
-	g++ -std=c++11 main.cc -o main.exe
+main.out: main.cc Matrix.cc LU.cc
+	g++ -std=c++11 Matrix.cc LU.cc main.cc -o main.out
 clean:
-	rm main.exe
+	rm main.out
