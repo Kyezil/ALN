@@ -4,7 +4,7 @@ LU::LU(US dim) : signP(false), N(dim) {
     Ac.set_dim(dim);
     P.reserve(dim);
     for (int i = 0; i < dim; ++i) P.push_back(i);
-};
+}
 
 void LU::pivot(const US i) {
     unsigned pivot_row = i;
@@ -23,7 +23,7 @@ void LU::pivot(const US i) {
         std::clog << "    Files " << i << " <-> " << pivot_row << std::endl;
         signP = not signP;
     }
-};
+}
 
 void LU::decompose() {
     for (unsigned i = 0; i < N; ++i) { //per a cada fila
@@ -34,17 +34,15 @@ void LU::decompose() {
             for (unsigned k = i+1; k < N; ++k) A(j,k) -= Mij*A(i,k);
         }
     }
-};
+}
 
-void LU::forward_substitution(VD& x, VD& b) {}; //Lx = b
+void LU::forward_substitution(VD& x, VD& b) {} //Lx = b
 
-void LU::backward_substitution(VD& x, VD& b) {}; //Ux = b
+void LU::backward_substitution(VD& x, VD& b) {} //Ux = b
 
 void LU::inverse() {
     Ai.set_dim(N);
-    std::clog << "*- Calcul inversa de A --" << std::endl;
     // Solve AX = I  <=>  PAX = P  <=>  LUX = P <=> {LY=P , UX=Y}
-    std::cout << std::endl;
     std::clog << "    - LY = P" << std::endl;
     for (US k = 0; k < N; ++k) {
         US j = P[k]; //column j has k zeros
@@ -70,12 +68,12 @@ void LU::inverse() {
         }
         
     }
-};
+}
 
 void LU::det() {
     detA = (signP)? -1 : 1;
     for (unsigned i = 0; i < N; ++i) detA *= A(i,i);
-};
+}
 
 void LU::print_L(const Matrix& A) {
     for (US i = 0; i < A.dim; ++i) {

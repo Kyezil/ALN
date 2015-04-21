@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <stdexcept>
+#include <cmath>
 class Matrix {
     typedef unsigned short US;
     private:
@@ -24,6 +25,9 @@ class Matrix {
             mat[i].push_back(el);
         }
         void swap_row(const US r, const US s);
+
+        static double norm1(const Matrix &m);
+        static double normInf(const Matrix &m);
 
         void read(std::ifstream& in);
         void write(std::ofstream& out) const;

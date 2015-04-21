@@ -9,13 +9,13 @@
 
 int main() {
     Chrono timing;
-    /* Tipus bàsic */
     /* Llegir matriu_A.dat */
     std::ifstream matriu_in("matriu_A.dat");
     unsigned short dim;
     if (matriu_in.is_open()) matriu_in >> dim;
     else throw std::runtime_error("Can't read dimension");
     LU lu(dim);
+
     std::clog << "*- Lectura de la matriu A --" << std::endl;
     lu.A.read(matriu_in);
     std::clog << "-- Fi lectura de la matriu A --" << std::endl;
@@ -30,17 +30,12 @@ int main() {
     lu.decompose();
     std::clog << "-- Fi descomposició LU de A --" << std::endl;
 
-//    std::clog << "*- Càlcul del vector de permutació" << std::endl;
-//    std::vector<unsigned> perm (dim);
-//    for (unsigned i = 0; i < dim; ++i) perm[row[i]] = i;
-//    std::clog << "-- Fi càlcul vector de permutació" << std::endl;
-
-//    /* Escriure resultat */
+    /* Escriure resultat */
     std::clog << "*- Escriptura de la matriu --" << std::endl;
     std::ofstream matriu_out("matrius_LU.dat");
     lu.A.write(matriu_out);
     std::clog << "-- Fi escriptura de la matriu --" << std::endl;
-//
+
     /* Determinant de A */
     std::clog << "*- Calcul det A --" << std::endl;
     lu.det();
@@ -48,7 +43,9 @@ int main() {
     std::clog << "-- Fi calcul det A --" << std::endl;
 
     if (std::fabs(lu.detA) > 1.e-8) {
+        std::clog << "*- Calcul inversa de A --" << std::endl;
         lu.inverse();
+        std::clog << "-- Fi calcul inversa de A --" << std::endl;
 
         std::clog << "*- Escriptura de la inversa" << std::endl;
         std::ofstream inversa("inversa_A.dat");
@@ -56,29 +53,20 @@ int main() {
         std::clog << "-- Fi escriptura de la inversa" << std::endl;
     }
     else std::clog << "! Det A < 1.e-8 !" << std::endl;
-//
-//    std::clog << "*- Inici d'output" << std::endl;
-//    std::clog << "   - det A" << std::endl;
-//    std::cout << "det A = " << detA << std::endl;
-//    std::clog << "   - ||A||1" << std::endl;
-//    //maximum absolut column sum;
-//    double norm1 = 0;
-//    for (unsigned j = 0; j < dim; ++j) {
-//        double sum_j = 0;
-//        for (unsigned i = 0; i < dim; ++i) sum_j += std::fabs(Ac[i][j]);
-//        if (sum_j > norm1) norm1 = sum_j;
-//    }
-//    std::cout << "||A||1 = " << norm1 << std::endl;
-//
-//    std::clog << "   - ||A||inf" << std::endl;
-//    double normInf = 0;
-//    for (unsigned i = 0; i < dim; ++i) {
-//        double sum_i = 0;
-//        for (unsigned j = 0; j < dim; ++j) sum_i += std::fabs(Ac[i][j]);
-//        if (sum_i > normInf) normInf = sum_i;
-//    }
-//    std::cout << "||A||inf = " << normInf << std::endl;
-//
+
+    std::clog << "*- Inici d'output" << std::endl;
+    
+    std::clog << "   - det A" << std::endl;
+    std::cout << "det A = " << lu.detA << std::endl;
+    
+    std::clog << "   - ||A||1" << std::endl;
+    double norm1 = Matrix::norm1(lu.Ac);
+    std::cout << "||A||1 = " << norm1 << std::endl;
+
+    std::clog << "   - ||A||inf" << std::endl;
+    double normInf = Matrix::normInf(lu.Ac);
+    std::cout << "||A||inf = " << normInf << std::endl;
+
 //    std::clog << "   - ||PA - LU||inf" << std::endl;
 //    {
 //        std::vector<unsigned> perm_i = perm;

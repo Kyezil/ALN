@@ -1,7 +1,7 @@
 #include "Matrix.hh"
 
-Matrix::Matrix() : dim(0) {};
-Matrix::Matrix(const Matrix& m): mat(m.mat), dim(m.dim) {};
+Matrix::Matrix() : dim(0) {}
+Matrix::Matrix(const Matrix& m): mat(m.mat), dim(m.dim) {}
 
 void Matrix::set_dim(const unsigned short N) {
     mat.resize(N);
@@ -11,7 +11,29 @@ void Matrix::set_dim(const unsigned short N) {
 
 void Matrix::swap_row(const unsigned short r, const unsigned short s) {
     mat[r].swap(mat[s]);
-};
+}
+
+double Matrix::norm1(const Matrix &m) {
+    //maximum absolut column sum
+    double norm = 0;
+    for (unsigned j = 0; j < m.dim; ++j) {
+        double sum_j = 0;
+        for (unsigned i = 0; i < m.dim; ++i) sum_j += std::fabs(m(i,j));
+        if (sum_j > norm) norm = sum_j;
+    }
+    return norm;
+}
+
+double Matrix::normInf(const Matrix &m) {
+    //maximum absolut row sum
+    double norm = 0;
+    for (unsigned i = 0; i < m.dim; ++i) {
+        double sum_i = 0;
+        for (unsigned j = 0; j < m.dim; ++j) sum_i += std::fabs(m(i,j));
+        if (sum_i > norm) norm = sum_i;
+    }
+    return norm;
+}
 
 void Matrix::read(std::ifstream& in) {
     if (in.is_open()) {
@@ -25,7 +47,7 @@ void Matrix::read(std::ifstream& in) {
         in.close();
     }
     else throw std::runtime_error("Matrix:read - Error file not open");
-};
+}
 
 void Matrix::write(std::ofstream& out) const {
     if (out.is_open()) {
@@ -36,7 +58,7 @@ void Matrix::write(std::ofstream& out) const {
         }
     }
     else throw std::runtime_error("Matrix:write - Error file not open");
-};
+}
 
 void Matrix::write_rev(std::ofstream& out) const {
     if (out.is_open()) {
@@ -47,4 +69,4 @@ void Matrix::write_rev(std::ofstream& out) const {
         }
     }
     else throw std::runtime_error("Matrix:write_rev - Error file not open");
-};
+}
