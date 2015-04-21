@@ -37,3 +37,14 @@ void Matrix::write(std::ofstream& out) const {
     }
     else throw std::runtime_error("Matrix:write - Error file not open");
 };
+
+void Matrix::write_rev(std::ofstream& out) const {
+    if (out.is_open()) {
+        for (unsigned j = 0; j < dim; ++j) {
+            out << mat[0][j];
+            for (unsigned i = 1; i < dim; ++i) out << ' ' << mat[i][j];
+            out << '\n';
+        }
+    }
+    else throw std::runtime_error("Matrix:write_rev - Error file not open");
+};

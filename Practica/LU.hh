@@ -29,5 +29,8 @@ class LU {
         void inverse();
 
         void det();
+
+        static void print_L(const Matrix& A);
+        static void print_U(const Matrix& A);
 };
 #endif
