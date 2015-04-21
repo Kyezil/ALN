@@ -3,12 +3,11 @@
 Matrix::Matrix() : dim(0) {};
 Matrix::Matrix(const Matrix& m): mat(m.mat), dim(m.dim) {};
 
-const double& Matrix::operator()(const int i, const int j) const {
-    return mat[i][j];
-};
-double Matrix::operator()(int i, int j) {
-    return mat[i][j];
-};
+void Matrix::set_dim(const unsigned short N) {
+    mat.resize(N);
+    for (int i = 0; i < N; ++i) mat[i].reserve(N);
+    dim = N;
+}
 
 void Matrix::swap_row(const unsigned short r, const unsigned short s) {
     mat[r].swap(mat[s]);
@@ -16,11 +15,7 @@ void Matrix::swap_row(const unsigned short r, const unsigned short s) {
 
 void Matrix::read(std::ifstream& in) {
     if (in.is_open()) {
-        in >> dim;
-        mat.resize(dim);
-        // llegeix matriu A
         for (unsigned i = 0; i < dim; ++i) {
-            mat[i].reserve(dim);
             for (unsigned j = 0; j < dim; ++j) {
                 double x;
                 in >> x;
