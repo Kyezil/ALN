@@ -54,8 +54,6 @@ int main() {
     }
     else std::clog << "! Det A < 1.e-8 !" << std::endl;
 
-    std::clog << "*- Inici d'output" << std::endl;
-
     std::clog << "   - det A" << std::endl;
     std::cout << "det A = " << lu.detA << std::endl;
 
@@ -77,7 +75,6 @@ int main() {
 
     std::clog << "   - ||PA - LU||inf" << std::endl;
     std::cout << "||PA-LU||inf = " << lu.normInf() << std::endl;
-    std::clog << "-- Fi d'output" << std::endl;
 
     std::clog << "*- Lectura de b" << std::endl;
     std::ifstream vec_in("vector_b.dat");
@@ -98,23 +95,14 @@ int main() {
     std::clog << "*- Escriptura de x" << std::endl;
     std::ofstream vec_out("sol_Axb.dat");
     LU::print_vec(vec_out, x);
-//
-//    std::clog << "*- Inici d'output 2" << std::endl;
-//    double errorX_1 = 0, errorX_2 = 0, errorX_inf = 0;
-//    // norm(Ax-b') = norm(PAx-Pb') = norm(LUx - b)
-//    {
-//        for (unsigned i = 0; i < dim; ++i) {
-//            double el = 0;
-//            for (unsigned j = 0; j < dim; ++j) el += LU[i][j]*x[j];
-//            el = std::fabs(el - b[i]);
-//            errorX_1 += el;
-//            errorX_2 += std::pow(el,2);
-//            if (el > errorX_inf) errorX_inf = el;
-//        }
-//        errorX_2 = std::sqrt(errorX_2);
-//    }
-//    std::cout << "||Ax - b||1 = " << errorX_1 << std::endl;
-//    std::cout << "||Ax - b||2 = " << errorX_2 << std::endl;
-//    std::cout << "||Ax - b||inf = " << errorX_inf << std::endl;
+    std::clog << "-- Fi escriptura de x" << std::endl;
+
+    std::clog << "*- Calcul normes Ax-b" << std::endl;
+    LU::normError errX = lu.normsAx_b(x);
+    std::clog << "-- Fi calcul normes Ax-b" << std::endl;
+
+    std::cout << "||Ax - b||1 = " << errX.err1 << std::endl;
+    std::cout << "||Ax - b||2 = " << errX.err2 << std::endl;
+    std::cout << "||Ax - b||inf = " << errX.errInf << std::endl;
     std::cout << "Time elapsed " << timing.lap() << " ms" << std::endl;
 }

@@ -15,7 +15,7 @@ class Matrix {
         Matrix(const Matrix& m);
         void set_dim(const US N);
 
-        inline const double operator()(const US i, const US j) const {
+        inline double operator()(const US i, const US j) const {
             return mat[i][j];
         }
         inline double& operator()(const US i, const US j) {

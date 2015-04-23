@@ -12,6 +12,10 @@ class LU {
         typedef std::vector<double> VD;
         typedef std::vector<US> VUS;
 
+        struct normError {
+            double err1, err2, errInf;
+        };
+
         Matrix A, Ai, Ac;
         US N;
         VUS P;
@@ -25,20 +29,23 @@ class LU {
 
         void pivot(const US i);
         void decompose();
-        void forward_substitution(VD& x, const VD& b); //Lx = b
-        void backward_substitution(VD& x, const VD& b); //Ux = b
-        
+        void forward_substitution(VD& x, const VD& b) const; //Lx = b
+        void backward_substitution(VD& x, const VD& b) const; //Ux = b
+
         void inverse();
         void gen_Pt();
-        void permP(Matrix& A);
+        void permP(Matrix& A) const;
 
         void det();
-        double getEl(const US i, const US j);
-        double normInf();
+        double getEl(const US i, const US j) const;
+        double normInf() const;
+
+        normError normsAx_b(const VD& x) const;
 
         static void print_L(const Matrix& A);
         static void print_U(const Matrix& A);
         void read_b(std::ifstream& in);
         static void print_vec(std::ofstream& out, const VD& x);
+
 };
 #endif

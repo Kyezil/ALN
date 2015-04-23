@@ -1,6 +1,12 @@
-all: main.out
-	
-main.out: main.cc Matrix.cc LU.cc
-	g++ -std=c++11 Matrix.cc LU.cc main.cc -o main.out
+CXX=g++
+CXX_FLAGS= -Wall -std=c++11
+SRC=main.cc Matrix.cc LU.cc
+EXE=main.out
+
+all: $(EXE)
+
+$(EXE): $(SRC)
+	$(CXX) $(CXX_FLAGS) $(SRC) -o $@
+
 clean:
-	rm main.out
+	rm $(EXE)

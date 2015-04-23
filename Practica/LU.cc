@@ -1,7 +1,6 @@
 #include "LU.hh"
-LU::LU(US dim) : signP(false), N(dim) {
+LU::LU(US dim) : N(dim), signP(false) {
     A.set_dim(dim);
-
     P.reserve(dim);
     for (int i = 0; i < dim; ++i) P.push_back(i);
 
@@ -11,14 +10,14 @@ LU::LU(US dim) : signP(false), N(dim) {
 
 void LU::pivot(const US i) {
     US pivot_row = i;
-    double pivot = 0;
+    double pivot_el = 0;
     for (US j = i; j < N; ++j) {
         // maxim de la fila j
         double max = std::fabs(A(i,j));
         for (US k = j+1; k < N; ++k)
             if(std::fabs(A(j,k)) > max) max = std::fabs(A(j,k));
         max = std::fabs(A(j,i))/max;
-        if (max > pivot) pivot = max, pivot_row = j;
+        if (max > pivot_el) pivot_el = max, pivot_row = j;
     }
     if (pivot_row != i) {
         A.swap_row(i, pivot_row);
@@ -39,22 +38,22 @@ void LU::decompose() {
     }
 }
 
-void LU::forward_substitution(VD& x, const VD& b) {
-    x[0] = b[0];
+void LU::forward_substitution(VD& x, const VD& vec) const {
+    x[0] = vec[0];
     for (US i = 1; i < N; ++i) {
         double sum = 0;
         for (US j = 0; j < i; ++j) sum += A(i,j)*x[j];
-        x[i] = (b[i] - sum);
+        x[i] = (vec[i] - sum);
     }
 } //Lx = b
 
-void LU::backward_substitution(VD& x, const VD& b) {
+void LU::backward_substitution(VD& x, const VD& vec) const {
     int i = N-1;
-    x[i] = b[i]/A(i,i);
+    x[i] = vec[i]/A(i,i);
     while (--i >= 0) {
         double sum = 0;
         for (US j = i+1; j < N; ++j) sum += A(i,j)*x[j];
-        x[i] = (b[i] - sum)/A(i,i);
+        x[i] = (vec[i] - sum)/A(i,i);
     }
 } //Ux = b
 
@@ -92,11 +91,11 @@ void LU::gen_Pt() {
     for (US i = 0; i < N; ++i) Pt[P[i]] = i;
 }
 
-void LU::permP(Matrix& A) {
+void LU::permP(Matrix& M) const {
     US i = 0, j = 0;
     for (US k = 0; k < N; ++k) {
         j = Pt[j];
-        if (j != i) A.swap_row(i,j);
+        if (j != i) M.swap_row(i,j);
         else j = i = i+1;
     }
 }
@@ -106,7 +105,7 @@ void LU::det() {
     for (US i = 0; i < N; ++i) detA *= A(i,i);
 }
 
-double LU::getEl(const US i, const US j) {
+double LU::getEl(const US i, const US j) const {
     US k = j+1;
     double el = 0;
     if (j >= i) {
@@ -117,7 +116,7 @@ double LU::getEl(const US i, const US j) {
     return el;
 }
 
-double LU::normInf() { //PA-LU
+double LU::normInf() const { //PA-LU
     double norm = 0;
     for (US i = 0; i < N; ++i) { //cada fila
         double sum_i = 0;
@@ -125,6 +124,21 @@ double LU::normInf() { //PA-LU
             sum_i += std::fabs(Ac(i,j) - getEl(i,j));
         if (sum_i > norm) norm = sum_i;
     }
+    return norm;
+}
+
+LU::normError LU::normsAx_b(const VD& x) const {
+    normError norm = {0,0,0};
+    // norm(Ax-b') = norm(PAx-Pb') = norm(Ac*x - b) b' original b
+    for (unsigned i = 0; i < N; ++i) {
+        double Ax_ij = 0;
+        for (unsigned j = 0; j < N; ++j) Ax_ij += Ac(i,j)*x[j];
+        Ax_ij = std::fabs(Ax_ij - b[i]);
+        norm.err1 += Ax_ij;
+        norm.err2 += Ax_ij*Ax_ij;
+        if (Ax_ij > norm.errInf) norm.errInf = Ax_ij;
+    }
+    norm.err2 = std::sqrt(norm.err2);
     return norm;
 }
 
