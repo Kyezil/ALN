@@ -97,3 +97,14 @@ void LU::print_U(const Matrix& A) {
     }
     std::cout << std::endl;
 }
+
+void LU::read_vec(std::ifstream& in) {
+    if (in.is_open()) {
+        unsigned dim_b;
+        in >> dim_b;
+        if (dim_b != N) throw std::runtime_error("LU::read_vec Dimension of b doesn't match");
+        for (unsigned i = 0; i < N ; ++i) in >> b[P[i]];
+        in.close();
+    }
+    else throw std::runtime_error("LU::read_vec File not open");
+}

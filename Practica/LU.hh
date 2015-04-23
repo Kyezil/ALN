@@ -32,5 +32,6 @@ class LU {
 
         static void print_L(const Matrix& A);
         static void print_U(const Matrix& A);
+        void read_vec(std::ifstream& in);
 };
 #endif

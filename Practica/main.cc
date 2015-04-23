@@ -55,10 +55,10 @@ int main() {
     else std::clog << "! Det A < 1.e-8 !" << std::endl;
 
     std::clog << "*- Inici d'output" << std::endl;
-    
+
     std::clog << "   - det A" << std::endl;
     std::cout << "det A = " << lu.detA << std::endl;
-    
+
     std::clog << "   - ||A||1" << std::endl;
     double norm1 = Matrix::norm1(lu.Ac);
     std::cout << "||A||1 = " << norm1 << std::endl;
@@ -113,18 +113,12 @@ int main() {
 //
 //
 //    std::clog << "*- Lectura de b" << std::endl;
-//    std::vector<double> b(dim);
-//    std::ifstream vec_in;
-//    vec_in.open("vector_b.dat");
-//    if (vec_in.is_open()) {
-//        unsigned dim_b;
-//        vec_in >> dim_b;
-//        assert(dim_b == dim);
-//        for (unsigned i = 0; i < dim; ++i) vec_in >> b[perm[i]];
-//        vec_in.close();
-//    }
-//    else throw std::runtime_error("!!!Problema llegint vector_b.dat!!!");
-//    std::clog << "-- Fi lectura de b" << std::endl;
+    std::vector<double> b(dim);
+    std::ifstream vec_in("vector_b.dat");
+    lu.read_vec(vec_in);
+    std::clog << "-- Fi lectura de b" << std::endl;
+    for (int i = 0; i < lu.N; ++i) std::cout << lu.b[i] << ' ';
+    std::cout << std::endl;
 //
 //    std::clog << "*- Càlcul Ax = b" << std::endl;
 //    std::clog << "   - Ly = b" << std::endl;
