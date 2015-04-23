@@ -7,14 +7,16 @@
 #include <cmath>
 #include "Matrix.hh"
 class LU {
-    typedef unsigned short US;
-    typedef std::vector<double> VD;
-    typedef std::vector<US> VUS;
-    
     public:
+        typedef unsigned short US;
+        typedef std::vector<double> VD;
+        typedef std::vector<US> VUS;
+
         Matrix A, Ai, Ac;
         US N;
         VUS P;
+        VUS Pt;
+
         bool signP;
         VD b;
         double detA;
@@ -23,15 +25,17 @@ class LU {
 
         void pivot(const US i);
         void decompose();
-        void forward_substitution(VD& x, VD& b); //Lx = b
-        void backward_substitution(VD& x, VD& b); //Ux = b
-
+        void forward_substitution(VD& x, const VD& b); //Lx = b
+        void backward_substitution(VD& x, const VD& b); //Ux = b
+        
         void inverse();
+        void gen_Pt();
 
         void det();
 
         static void print_L(const Matrix& A);
         static void print_U(const Matrix& A);
-        void read_vec(std::ifstream& in);
+        void read_b(std::ifstream& in);
+        static void print_vec(std::ofstream& out, const VD& x);
 };
 #endif

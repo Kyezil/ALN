@@ -67,6 +67,10 @@ int main() {
     double normInf = Matrix::normInf(lu.Ac);
     std::cout << "||A||inf = " << normInf << std::endl;
 
+    std::clog << "*- Genera vector Pt" << std::endl;
+    lu.gen_Pt();
+    std::clog << "-- Fi genera vector Pt" << std::endl;
+
 //    std::clog << "   - ||PA - LU||inf" << std::endl;
 //    {
 //        std::vector<unsigned> perm_i = perm;
@@ -112,46 +116,34 @@ int main() {
 //    std::clog << "-- Fi d'output" << std::endl;
 //
 //
-//    std::clog << "*- Lectura de b" << std::endl;
-    std::vector<double> b(dim);
+    std::cout << "VECTOR P" << std::endl;
+    for(int i = 0; i < lu.N; ++i) std::cout << lu.P[i] << ' ';
+    std::cout << std::endl << std::endl;
+    
+
+    std::clog << "*- Lectura de b" << std::endl;
     std::ifstream vec_in("vector_b.dat");
-    lu.read_vec(vec_in);
+    lu.read_b(vec_in);
     std::clog << "-- Fi lectura de b" << std::endl;
-    for (int i = 0; i < lu.N; ++i) std::cout << lu.b[i] << ' ';
-    std::cout << std::endl;
-//
-//    std::clog << "*- Càlcul Ax = b" << std::endl;
-//    std::clog << "   - Ly = b" << std::endl;
-//    std::vector<double> x; //y = x
-//    {
-//        x.reserve(dim);
-//        x.push_back(b[0]);
-//        for (unsigned i = 1; i < dim; ++i) {
-//            double sum = 0;
-//            for (unsigned j = 0; j < i; ++j) sum += A[i][j]*x[j];
-//            x.push_back(b[i] - sum);
-//        }
-//
-//        std::clog << "   - Ux = y" << std::endl;
-//        int i = dim-1;
-//        x[i] = x[i]/A[i][i];
-//        while (--i >= 0) {
-//            double sum = 0;
-//            for (unsigned j = i+1; j < dim; ++j) sum += A[i][j]*x[j];
-//            x[i] = (x[i] - sum)/A[i][i];
-//        }
-//    }
-//    std::clog << "-- Fi càlcul Ax=b" << std::endl;
-//
-//    std::clog << "*- Escriptura de x" << std::endl;
-//    {
-//        std::ofstream vec_out;
-//        vec_out.open("sol_Axb.dat");
-//        if (vec_out.is_open()) {
-//            for (unsigned i = 0; i < dim; ++i) vec_out << x[i] << '\n';
-//        }
-//        else throw std::runtime_error("!!!Problema escrivint sol_Axb.dat");
-//    }
+    
+    std::cout << "VECTOR b" << std::endl;
+    for(int i = 0; i < lu.N; ++i) std::cout << lu.b[i] << ' ';
+    std::cout << std::endl << std::endl;
+    
+    std::clog << "*- Càlcul Ax = b" << std::endl;
+    
+    std::clog << "   - Ly = b" << std::endl;
+    std::vector<double> x (lu.N); //y = x
+    lu.forward_substitution(x, lu.b);
+    
+    std::clog << "   - Ux = y" << std::endl;
+    lu.backward_substitution(x, x);
+    
+    std::clog << "-- Fi càlcul Ax=b" << std::endl;
+
+    std::clog << "*- Escriptura de x" << std::endl;
+    std::ofstream vec_out("sol_Axb.dat");
+    LU::print_vec(vec_out, x);
 //
 //    std::clog << "*- Inici d'output 2" << std::endl;
 //    double errorX_1 = 0, errorX_2 = 0, errorX_inf = 0;
