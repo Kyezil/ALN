@@ -71,74 +71,28 @@ int main() {
     lu.gen_Pt();
     std::clog << "-- Fi genera vector Pt" << std::endl;
 
-//    std::clog << "   - ||PA - LU||inf" << std::endl;
-//    {
-//        std::vector<unsigned> perm_i = perm;
-//        unsigned k = 0;
-//        while (k < dim) {
-//            if (perm_i[k] != k) {
-//                Ac[k].swap(Ac[perm_i[k]]);
-//                std::swap(perm_i[k], perm_i[perm_i[k]]);
-//            }
-//            else ++k;
-//        }
-//    }
-//
-//    Matriu LU;
-//    LU.resize(dim);
-//    std::clog << "    - matriu LU" << std::endl;
-//    {
-//        for (unsigned i = 0; i < dim; ++i) {
-//            LU[i].reserve(dim);
-//            for (unsigned j = 0; j < dim; ++j) {
-//                unsigned k = j+1;
-//                double element = 0;
-//                if (j >= i) {
-//                    element = A[i][j];
-//                    k = i;
-//                }
-//                for (unsigned l = 0; l < k; ++l)
-//                    element += A[i][l]*A[l][j];
-//                LU[i].push_back(element);
-//            }
-//        }
-//    }
-//        double normErrorInf = 0;
-//    {
-//        for (unsigned i = 0; i < dim; ++i) {
-//            double sum_i = 0;
-//            for (unsigned j = 0; j < dim; ++j)
-//                sum_i += std::fabs(Ac[i][j] - LU[i][j]);
-//            if (sum_i > normErrorInf) normErrorInf = sum_i;
-//        }
-//    }
-//    std::cout << "||PA-LU||inf = " << normErrorInf << std::endl;
-//    std::clog << "-- Fi d'output" << std::endl;
-//
-//
-    std::cout << "VECTOR P" << std::endl;
-    for(int i = 0; i < lu.N; ++i) std::cout << lu.P[i] << ' ';
-    std::cout << std::endl << std::endl;
-    
+    std::clog << "*- Permuta A_copia" << std::endl;
+    lu.permP(lu.Ac);
+    std::clog << "-- Fi permuta A_copia" << std::endl;
+
+    std::clog << "   - ||PA - LU||inf" << std::endl;
+    std::cout << "||PA-LU||inf = " << lu.normInf() << std::endl;
+    std::clog << "-- Fi d'output" << std::endl;
 
     std::clog << "*- Lectura de b" << std::endl;
     std::ifstream vec_in("vector_b.dat");
     lu.read_b(vec_in);
     std::clog << "-- Fi lectura de b" << std::endl;
-    
-    std::cout << "VECTOR b" << std::endl;
-    for(int i = 0; i < lu.N; ++i) std::cout << lu.b[i] << ' ';
-    std::cout << std::endl << std::endl;
-    
+
     std::clog << "*- Càlcul Ax = b" << std::endl;
-    
+
     std::clog << "   - Ly = b" << std::endl;
     std::vector<double> x (lu.N); //y = x
     lu.forward_substitution(x, lu.b);
-    
+
     std::clog << "   - Ux = y" << std::endl;
     lu.backward_substitution(x, x);
-    
+
     std::clog << "-- Fi càlcul Ax=b" << std::endl;
 
     std::clog << "*- Escriptura de x" << std::endl;

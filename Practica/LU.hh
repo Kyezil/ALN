@@ -30,8 +30,11 @@ class LU {
         
         void inverse();
         void gen_Pt();
+        void permP(Matrix& A);
 
         void det();
+        double getEl(const US i, const US j);
+        double normInf();
 
         static void print_L(const Matrix& A);
         static void print_U(const Matrix& A);

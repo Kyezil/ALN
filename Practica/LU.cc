@@ -92,9 +92,40 @@ void LU::gen_Pt() {
     for (US i = 0; i < N; ++i) Pt[P[i]] = i;
 }
 
+void LU::permP(Matrix& A) {
+    US i = 0, j = 0;
+    for (US k = 0; k < N; ++k) {
+        j = Pt[j];
+        if (j != i) A.swap_row(i,j);
+        else j = i = i+1;
+    }
+}
+
 void LU::det() {
     detA = (signP)? -1 : 1;
     for (US i = 0; i < N; ++i) detA *= A(i,i);
+}
+
+double LU::getEl(const US i, const US j) {
+    US k = j+1;
+    double el = 0;
+    if (j >= i) {
+        el = A(i,j);
+        k = i;
+    }
+    for (US l = 0; l < k; ++l) el+= A(i,l)*A(l,j);
+    return el;
+}
+
+double LU::normInf() { //PA-LU
+    double norm = 0;
+    for (US i = 0; i < N; ++i) { //cada fila
+        double sum_i = 0;
+        for (US j = 0; j < N; ++j) // cada columna
+            sum_i += std::fabs(Ac(i,j) - getEl(i,j));
+        if (sum_i > norm) norm = sum_i;
+    }
+    return norm;
 }
 
 void LU::print_L(const Matrix& A) {
