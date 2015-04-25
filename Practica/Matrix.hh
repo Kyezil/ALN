@@ -4,16 +4,18 @@
 #include <fstream>
 #include <stdexcept>
 #include <cmath>
+#include <functional>
 class Matrix {
-    typedef unsigned short US;
     private:
-        std::vector<std::vector<double> > mat;
+        typedef unsigned short US;
+        typedef std::vector<std::vector<double> > VVD;
+        US dim;
+        VVD mat;
     public:
-        unsigned short dim;
-
         Matrix();
         Matrix(const Matrix& m);
-        void set_dim(const US N);
+        Matrix(const US N, const bool pushable = false);
+        Matrix(const US N, std::ifstream& in);
 
         inline double operator()(const US i, const US j) const {
             return mat[i][j];
@@ -24,13 +26,17 @@ class Matrix {
         inline void push(const US i, double el) {
             mat[i].push_back(el);
         }
-        void swap_row(const US r, const US s);
+
+        inline void swap_row(const US r, const US s) {
+            mat[r].swap(mat[s]);
+        }
+
+        US get_dim() const;
 
         static double norm1(const Matrix &m);
         static double normInf(const Matrix &m);
 
-        void read(std::ifstream& in);
         void write(std::ofstream& out) const;
-        void write_rev(std::ofstream& out) const;
+        void write_t(std::ofstream& out) const;
 };
 #endif

@@ -1,102 +1,106 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <stdexcept>
-#include <cassert>
 #include <cmath>
 #include "Chrono.hh"
-#include "LU.hh"
+#include "LU_decomposition.hh"
+
+typedef std::vector<double> VD;
+
+void read_vector(std::ifstream& in, VD &v) 
+{/*{{{*/
+    unsigned short dim;
+    in >> dim;
+    v.reserve(dim);
+    for (int i = 0; i < dim; ++i) {
+        double x;
+        in >> x;
+        v.push_back(x);
+    }
+}/*}}}*/
+
+void print_vector(const VD &v, std::ofstream& out) 
+{/*{{{*/
+    for (unsigned int i = 0; i < v.size(); ++i)
+        out << v[i] << '\n';
+}/*}}}*/
+
+struct normError {
+    double err1, err2, errInf;
+};
+
+normError normsAx_b(const Matrix& A, const VD& x, const VD& b) 
+{/*{{{*/
+    normError norm = {0,0,0};
+    // norm(Ax-b') = norm(PAx-Pb') = norm(Ac*x - b) b' original b
+    unsigned short N = b.size();
+    for (unsigned i = 0; i < N; ++i) {
+        double Ax_ij = 0;
+        for (unsigned j = 0; j < N; ++j) Ax_ij += A(i,j)*x[j];
+        Ax_ij = std::fabs(Ax_ij - b[i]);
+        norm.err1 += Ax_ij;
+        norm.err2 += Ax_ij*Ax_ij;
+        if (Ax_ij > norm.errInf) norm.errInf = Ax_ij;
+    }
+    norm.err2 = std::sqrt(norm.err2);
+    return norm;
+}/*}}}*/
 
 int main() {
     Chrono timing;
     /* Llegir matriu_A.dat */
     std::ifstream matriu_in("matriu_A.dat");
-    unsigned short dim;
-    if (matriu_in.is_open()) matriu_in >> dim;
-    else throw std::runtime_error("Can't read dimension");
-    LU lu(dim);
-
-    std::clog << "*- Lectura de la matriu A --" << std::endl;
-    lu.A.read(matriu_in);
-    std::clog << "-- Fi lectura de la matriu A --" << std::endl;
-
-    /* Copia de A */
-    std::clog << "*- Copia de la matriu A --" << std::endl;
-    lu.Ac = lu.A;
-    std::clog << "-- Fi copia de la matriu A --" << std::endl;
-
-    /* Descomposició LU */
-    std::clog << "*- Descomposició LU de A --" << std::endl;
-    lu.decompose();
-    std::clog << "-- Fi descomposició LU de A --" << std::endl;
-
-    /* Escriure resultat */
-    std::clog << "*- Escriptura de la matriu --" << std::endl;
     std::ofstream matriu_out("matrius_LU.dat");
-    lu.A.write(matriu_out);
-    std::clog << "-- Fi escriptura de la matriu --" << std::endl;
-
+    unsigned short dim;
+    matriu_in >> dim;
+    Matrix A (dim, matriu_in);
+    LU_decomposition lu(A, matriu_out);
+    matriu_in.close();
+    matriu_out.close();
     /* Determinant de A */
-    std::clog << "*- Calcul det A --" << std::endl;
-    lu.det();
-    std::clog << "    - det A = " << lu.detA << std::endl;
-    std::clog << "-- Fi calcul det A --" << std::endl;
+    std::clog << "-- Compute det A --" << std::endl;
+    double detA = lu.detA();
+    std::clog << "    - det A = " << detA << std::endl;
 
-    if (std::fabs(lu.detA) > 1.e-8) {
-        std::clog << "*- Calcul inversa de A --" << std::endl;
-        lu.inverse();
-        std::clog << "-- Fi calcul inversa de A --" << std::endl;
+    if (std::fabs(detA) > 1.e-8) {
+        std::clog << "-- Inverse of A --" << std::endl;
+        Matrix Ai (dim, true);
+        lu.inverseA(Ai);
 
-        std::clog << "*- Escriptura de la inversa" << std::endl;
+        std::clog << "-- Output inverse" << std::endl;
         std::ofstream inversa("inversa_A.dat");
-        lu.Ai.write_rev(inversa);
-        std::clog << "-- Fi escriptura de la inversa" << std::endl;
+        if (not inversa.is_open())
+            throw std::runtime_error("Can't open inversa_A.dat");
+        Ai.write_t(inversa);
+        inversa.close();
     }
     else std::clog << "! Det A < 1.e-8 !" << std::endl;
 
     std::clog << "   - ||A||1" << std::endl;
-    double norm1 = Matrix::norm1(lu.Ac);
-    std::cout << "||A||1 = " << norm1 << std::endl;
+    std::cout << "||A||1 = " << Matrix::norm1(A) << std::endl;
 
     std::clog << "   - ||A||inf" << std::endl;
-    double normInf = Matrix::normInf(lu.Ac);
-    std::cout << "||A||inf = " << normInf << std::endl;
-
-    std::clog << "*- Genera vector Pt" << std::endl;
-    lu.gen_Pt();
-    std::clog << "-- Fi genera vector Pt" << std::endl;
-
-    std::clog << "*- Permuta A_copia" << std::endl;
-    lu.permP(lu.Ac);
-    std::clog << "-- Fi permuta A_copia" << std::endl;
+    std::cout << "||A||inf = " << Matrix::normInf(A) << std::endl;
 
     std::clog << "   - ||PA - LU||inf" << std::endl;
-    std::cout << "||PA-LU||inf = " << lu.normInf() << std::endl;
+    std::cout << "||PA-LU||inf = " << lu.normInfPA_LU(A) << std::endl;
 
-    std::clog << "*- Lectura de b" << std::endl;
+    std::clog << "-- Read vector b" << std::endl;
     std::ifstream vec_in("vector_b.dat");
-    lu.read_b(vec_in);
-    std::clog << "-- Fi lectura de b" << std::endl;
+    VD b;
+    read_vector(vec_in, b);
 
-    std::clog << "*- Càlcul Ax = b" << std::endl;
+    std::clog << "-- Solve Ax = b for x" << std::endl;
+    VD x;
+    lu.solveAx_b(b, x);
 
-    std::clog << "   - Ly = b" << std::endl;
-    std::vector<double> x (lu.N); //y = x
-    lu.forward_substitution(x, lu.b);
-
-    std::clog << "   - Ux = y" << std::endl;
-    lu.backward_substitution(x, x);
-
-    std::clog << "-- Fi càlcul Ax=b" << std::endl;
-
-    std::clog << "*- Escriptura de x" << std::endl;
+    std::clog << "-- Write solution x" << std::endl;
     std::ofstream vec_out("sol_Axb.dat");
-    LU::print_vec(vec_out, x);
-    std::clog << "-- Fi escriptura de x" << std::endl;
+    print_vector(x, vec_out);
+    vec_out.close();
 
-    std::clog << "*- Calcul normes Ax-b" << std::endl;
-    LU::normError errX = lu.normsAx_b(x);
-    std::clog << "-- Fi calcul normes Ax-b" << std::endl;
+    std::clog << "-- Compute norms Ax-b" << std::endl;
+    normError errX = normsAx_b(A, x, b);
 
     std::cout << "||Ax - b||1 = " << errX.err1 << std::endl;
     std::cout << "||Ax - b||2 = " << errX.err2 << std::endl;
