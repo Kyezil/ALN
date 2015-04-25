@@ -54,9 +54,6 @@ int main() {
     }
     else std::clog << "! Det A < 1.e-8 !" << std::endl;
 
-    std::clog << "   - det A" << std::endl;
-    std::cout << "det A = " << lu.detA << std::endl;
-
     std::clog << "   - ||A||1" << std::endl;
     double norm1 = Matrix::norm1(lu.Ac);
     std::cout << "||A||1 = " << norm1 << std::endl;

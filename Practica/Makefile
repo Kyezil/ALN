@@ -9,6 +9,8 @@ fast: CXX_FLAGS += -Ofast
 fast: $(EXE)
 debug: CXX_FLAGS += -g
 debug: $(EXE)
+generator: generator.cc
+	$(CXX) $(CXX_FLAGS) generator.cc -o generator.out
 
 $(EXE): $(SRC)
 	$(CXX) $(CXX_FLAGS) $(SRC) -o $@
