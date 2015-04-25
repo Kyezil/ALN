@@ -3,7 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include <stdexcept>
 #include <cmath>
 #include "Matrix.hh"
 class LU_decomposition {
