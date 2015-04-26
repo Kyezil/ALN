@@ -89,16 +89,8 @@ void LU_decomposition::inverseA(Matrix &Ai)
     }
 
     std::clog << "    - UX = Y" << std::endl;
-    for (US j = 0; j < N; ++j) {
-        int k = N-1;
-        Ai(j,k) /= LU(k,k);
-        while (--k >= 0) {
-            double x = 0;
-            for (US s = k+1; s < N; ++s) x += LU(k,s)*Ai(j,s);
-            Ai(j,k) = (Ai(j,k) - x)/LU(k,k);
-        }
-
-    }
+    for (US j = 0; j < N; ++j)
+        backward_substitution(Ai(j), Ai(j));
 }/*}}}*/
 
 void LU_decomposition::solveAx_b(const VD& b, VD& x)

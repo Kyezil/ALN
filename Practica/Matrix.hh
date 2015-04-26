@@ -8,7 +8,8 @@
 class Matrix {
     private:
         typedef unsigned short US;
-        typedef std::vector<std::vector<double> > VVD;
+        typedef std::vector<double> VD;
+        typedef std::vector<VD> VVD;
         US dim;
         VVD mat;
     public:
@@ -23,6 +24,10 @@ class Matrix {
         inline double& operator()(const US i, const US j) {
             return mat[i][j];
         }
+        inline VD& operator()(const US i) {
+            return mat[i];
+        }
+
         inline void push(const US i, double el) {
             mat[i].push_back(el);
         }
