@@ -7,7 +7,7 @@
 
 typedef std::vector<double> VD;
 
-void read_vector(std::ifstream& in, VD &v) 
+void read_vector(std::ifstream& in, VD &v)
 {/*{{{*/
     unsigned short dim;
     in >> dim;
@@ -19,7 +19,7 @@ void read_vector(std::ifstream& in, VD &v)
     }
 }/*}}}*/
 
-void print_vector(const VD &v, std::ofstream& out) 
+void print_vector(const VD &v, std::ofstream& out)
 {/*{{{*/
     for (unsigned int i = 0; i < v.size(); ++i)
         out << v[i] << '\n';
@@ -29,7 +29,7 @@ struct normError {
     double err1, err2, errInf;
 };
 
-normError normsAx_b(const Matrix& A, const VD& x, const VD& b) 
+normError normsAx_b(const Matrix& A, const VD& x, const VD& b)
 {/*{{{*/
     normError norm = {0,0,0};
     // norm(Ax-b') = norm(PAx-Pb') = norm(Ac*x - b) b' original b

@@ -7,7 +7,7 @@ all: $(EXE)
 
 fast: CXX_FLAGS += -O2
 fast: $(EXE)
-debug: CXX_FLAGS += -g
+debug: CXX_FLAGS += -pg
 debug: $(EXE)
 generator: generator.cc
 	$(CXX) $(CXX_FLAGS) generator.cc -o generator.out

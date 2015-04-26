@@ -1,7 +1,7 @@
 #include "LU_decomposition.hh"
 
 LU_decomposition::LU_decomposition(const Matrix& A, std::ofstream &matLU)
-: N(A.get_dim()), LU(A) {/*{{{*/
+: N(A.get_dim()), LU(A), signP(false) {/*{{{*/
     /* Construction */
     P.reserve(N);
     for (US i = 0; i < N; ++i) P.push_back(i);

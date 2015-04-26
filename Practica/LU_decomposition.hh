@@ -1,5 +1,5 @@
-#ifndef LU_HH
-#define LU_HH
+#ifndef LU_DECOMPOSITION_HH
+#define LU_DECOMPOSITION_HH
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -33,8 +33,5 @@ class LU_decomposition {
         double getLU(const US i, const US j) const;
 
         double normInfPA_LU(const Matrix& A) const;
-
-        static void print_L(const Matrix& A);
-        static void print_U(const Matrix& A);
 };
 #endif
