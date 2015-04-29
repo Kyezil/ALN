@@ -1,11 +1,11 @@
 CXX=g++
-CXX_FLAGS= -Wall -std=c++11
+CXX_FLAGS= -Wall -std=c++11 -O2
 SRC=main.cc Matrix.cc LU_decomposition.cc
 EXE=main.out
 
 all: $(EXE)
 
-fast: CXX_FLAGS += -O2
+fast: CXX_FLAGS += -Ofast
 fast: $(EXE)
 debug: CXX_FLAGS += -pg
 debug: $(EXE)
