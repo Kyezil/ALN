@@ -1,0 +1,463 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{fullpage}
+%\documentclass[a4paper,10pt]{scrartcl}
+\usepackage{listings}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{fancyvrb}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{multirow}
+\title{Informe - Pràctica descomposició LU}
+\author{Louis Clergue}
+\date{26/04/15}
+
+\pdfinfo{%
+  /Title    (Informe - Pr\string\340ctica descomposici\string\363 LU)
+  /Author   (Louis Clergue)
+  /Creator  (Louis Clergue)
+}
+\definecolor{darkblue}{rgb}{0,0,.6}
+\definecolor{darkred}{rgb}{.6,0,0}
+\definecolor{darkgreen}{rgb}{0,.6,0}
+\definecolor{red}{rgb}{.98,0,0}
+
+\lstloadlanguages{C++}
+\lstset{%
+  language=C++,
+  basicstyle=\ttfamily,
+  commentstyle=\itshape\color{darkgreen},
+  keywordstyle=\bfseries\color{darkblue},
+  stringstyle=\color{darkred},
+  showspaces=false,
+  showtabs=false,
+  columns=fixed,
+  numbers=left,
+  frame=none,
+  numberstyle=\tiny,
+  breaklines=true,
+  showstringspaces=false,
+  xleftmargin=1cm,
+  frame=single,
+  literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\EUR}}1 {£}{{\pounds}}1
+}%
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+
+\begin{document}
+\pagenumbering{arabic}
+\maketitle
+
+\section{Objetiu i orientació}
+Amb aquesta pràctica es vol aconseguir una primera experiència en la implementació d'un mètode numèric, concretament la descomposició LU d'una matriu A;
+amb la intenció de computar-ne el determinant, la inversa, resoldre un sistema compatible determinat i calcular mesures de l'error en fer aquestes
+operacions.
+\\
+Un cop el problema plantejat hem de decidir com s'implementarà i quin ús posterior volem fer del programa.
+En el meu cas he escollit el C++ (versió C++11) com a llenguatge de programació degut a què és el que millor domino i també el en què més vull aprofundir.
+L'objetiu principal és que el programa sigui eficient però també, en la mesura del possible, reutilizable (per a altres mètodes p.ex).
+\section{Estructura de dades}
+En mètodes numèric té especial importància el cost operacional d'un mètode, que influeix directament en el temps d'execució; però, cal tenir present que un dels
+majors costos temporals és la gestió de la memòria (assignació, inicializació, accés, alliberament). Personalment considero que és tant important escollir
+l'estructura de dades com l'algorisme, per això he dedicat bona part de la pràctica en escollir una estructura i en crear operacions per poder implementar els
+algorismes amb el mínim cost adicional.
+En el cas de la descomposició LU manegem exclusivament matrius i vectors; l'accés sempre serà seqüèncial per files/columnes/diagonal, les mides seran fixes
+un cop declarades i els elements són tots reals.
+El contenidor més natural és un array de 1 i 2 dimensions per vectors i matrius respectivament.
+\subsection{Array vs Vector}
+Ara s'ens presenten dues opcions utilitzar arrays o vectors, el primer un contenidor original del C i el segon una classe de la STL del C++.
+Personalment no estava segur de quin escollir: els arrays guarden només en memòria els elements que contenen però s'ha de fer la gestió de la memòria,
+els vectors en canvi gestionen la memòria i tenen atributs de mida, capacitat, etc i mètodes per accedir i modificar el contingut. Semblaria que l'array,
+al tenir menys \textit{features} és més eficient però el vector és molt més segur i l'ús n'és més ``explícit''. Vaig preguntar al meu professor de programació de
+la FIB i, una breu conclusió és que un vector és molt semblant a un array: els rendiments són semblants sempre que és tingui en compte el cost de les
+operacions que s'utilitzen. Conclusió, escullo la classe vector fent un estudi previ de les operacions que proporciona i els seus costos.
+\subsection{Classe Matriu}
+Vista la necessitat d'una estructura eficient per guardar Matrius, creem la classe Matriu un \textit{wrapper} sobre un vector de vectors de doubles.
+Implementa un operador (i,j) per accedir als elements i un (i) per obtenir els vectors fila; uns quants constructors; la permutació de files (cost constant
+permutant referències); i les normes de matrius:
+\[
+ \|A\|_1 = max\left\{ \sum_{i=1}^n|a_{ij}| \quad \forall j = 1:n \right\} \quad
+ \|A\|_\infty = max\left\{ \sum_{j=1}^n|a_{ij}| \quad \forall i = 1:n \right\}
+\]
+\section{Algorismes implementats}
+\subsection{Descomposició LU}
+Volem descompondre una matriu A quadrada no singular en la següent forma PA = LU on P una matriu de permutació (invertible i ortonormal),
+L triangular inferior amb 1 a la diagonal i U una matriu triangular superior:
+\[
+  P
+  \left(
+  \begin{array}{cccc}
+  a_{11}	&	a_{12}	&	\ldots	&	a_{1n}	\\
+  a_{21}	&	a_{22}	&	\ldots	&	a_{2n}	\\
+  a_{31}	&	a_{32}	&	\ldots	&	a_{3n}	\\
+  \vdots	&	\vdots	& 	\ddots	&	\vdots	\\
+  a_{n1}	&	a_{n2}	&	\ldots	&	a_{nn}	\\
+  \end{array}
+  \right)
+  =
+  \left(
+  \begin{array}{ccccc}
+  1			&			&		&		&		\\	
+  m_{21}	&	1		&		&		&		\\
+  m_{31}	&	m_{32}	&	1	&		&		\\
+  \vdots	&	\vdots	&\ddots	&\ddots	& 		\\
+  m_{n1}	&	m_{n2}	&\ldots	&	m_{n,n-1}&	1	\\
+  \end{array}
+  \right)
+  \left(
+  \begin{array}{ccccc}
+  u_{11}&u_{12}	& u_{13}&	\ldots	&	u_{1n}	\\	
+  		&u_{22}	& u_{23}&	\ldots	&	u_{2n}	\\
+  		&		& u_{33}&	\ldots	&	u_{3n}	\\
+  		&		& 		&	\ddots	&	\vdots	\\
+  		&		&		&			&	u_{nn}	\\
+  \end{array}
+  \right)
+\]
+Calculats de la manera següent: els elements $a_{ij}^{(0)}$ són de la matriu $A$ original; en el pas $i$-èssim es fa pivotatge si cal
+, es calculen els elements de L i U seguint l'esquema i es generen els $a_{ij}^{(i+1)}$ \\
+\begin{minipage}{0.2\textwidth}
+ \begin{tabular}{|c|c|cc|}
+\hline
+\multicolumn{4}{|c|}{$u_1$} \\ \hline
+\multirow{3}{*}{$m_1$} & \multicolumn{3}{|c|}{$u_2$} \\ \cline{2-4}
+				   & \multirow{2}{*}{$m_2$} &  &  \\
+				   &					& &  \\
+\hline
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.6\textwidth}
+\begin{align*}
+  u_{ij} &= a_{ij}^{(i)} \quad \forall j = i \div n  \\
+  m_{ij} &= \frac{a_{ji}^{(i)}}{a_{ii}^{(i)}} \quad \forall j = i+1 \div n   \\
+  a_{jk}^{(i+1)} &= a_{jk}^{(i)} - m_{ij}\cdot u_{ik} \quad \forall j = i+1 \div n,\ k = i+1 \div n 
+\end{align*}
+\end{minipage}
+\vspace{\belowdisplayskip} \\
+En el pas 1 es generen els $u_1$ i els $m_1$, en el pas 2: $u_2$ i $m_2$, etc. Algorisme implementat:
+\begin{lstlisting}[mathescape]
+for $i = 1 \div n $
+    pivot(i)
+    for $j = i+1 \div n$
+        $m_{ij} = a_{ji}$\$a_{i,i}$
+        $a_{ji} = m_{ij}$
+        for $k = i+1 \div n$
+            $a_{jk} = a_{jk} - m_{ij}*a_{i,k}$
+\end{lstlisting}
+On pivot(i) permuta la fila $i$ per la que li toca segons un pivotatge parcial esglaonat, és a dir:
+permutem la fila $i$ per la fila
+\[
+\underset{j \in \{i\dots n\}}{\text{argmax}}\ \frac{|a_{ji}|}{\underset{k=i \div n}{\text{max} \ |a_{jk}|}}
+\]
+Implementat amb l'algorisme:
+\begin{lstlisting}[mathescape]
+    $pivot\_row = i$
+    $pivot\_el = 0$
+    for $j = i \div n :$  //per a cada fila j
+        $max\_j = |a_{ij}|$
+        for $k = j+1 \div n :$ //per a cada columna k de la fila j
+           $max\_j = max\{|a_{jk}|, max\_j\}$
+        $max\_j = |a_{ji}|/max\_j$ // pivot/max
+        if $max\_j > pivot\_el :$
+            $pivot\_el = max\_j$
+            $pivot\_row = j$
+    if $pivot\_row \neq i :$
+        $A_i \leftrightarrow A_{pivot\_row}$ //permuta files
+        $P_i \leftrightarrow P_{pivot\_row}$ //permuta vector p
+        $signP = \neg signP$ //canvia paritat
+\end{lstlisting}
+$\star$ En primera instància no vaig guardar la paritat de la permutació i calculant el determinant aquest podia tenir signe erroni. \newpage
+Un cop feta la substitució la matriu $A$ ha quedat modificada i ara conté les matrius $L$ i $U$ alhora:
+\[
+ A = \left(
+  \begin{array}{ccccc}
+  u_{11}&	u_{12}	& u_{13}&	\ldots	&	u_{1n}	\\
+  m_{21}&	u_{22}	& u_{23}&	\ldots	&	u_{2n}	\\
+  m_{31}&	m_{32}	& u_{33}&	\ldots	&	u_{3n}	\\
+  \vdots&	\vdots	&\ddots	&	\ddots	&	\vdots  \\
+  m_{n1}&	m_{n2}	&\ldots	&m_{n,n-1}	&	u_{nn}	\\
+  \end{array}
+  \right)
+\]
+\subsection{Resolució Ax=b}
+Ara que tenim la descomposició $PA = LU$ podem aprofitar-la per resoldre un sistema compatible determinat $Ax=b$
+\[
+  Ax=b \iff PAx = Pb \iff LUx = Pb \iff \left.
+  \begin{array}{c}
+   Ly = Pb \\
+   Ux = y \\
+  \end{array}
+  \right\}
+\]
+Que consisteix en resoldre 2 sistemes triangulars.
+\subsubsection{Substitució endavant}
+Volem trobar la solució $y$ de :
+\[
+ Ly = Pb \iff
+ \left(
+  \begin{array}{ccccc}
+  1			&			&		&		&		\\	
+  m_{21}	&	1		&		&		&		\\
+  m_{31}	&	m_{32}	&	1	&		&		\\
+  \vdots	&	\vdots	&\ddots	&\ddots	& 		\\
+  m_{n1}	&	m_{n2}	&\ldots	&	m_{n,n-1}&	1	\\
+  \end{array}
+  \right)
+  \left(
+  \begin{array}{c}
+   y_1 \\
+   y_2 \\
+   y_3 \\
+   \vdots \\
+   y_n \\
+  \end{array}
+  \right)
+  =
+  P
+  \left(
+  \begin{array}{c}
+   b_1 \\
+   b_2 \\
+   b_3 \\
+   \vdots \\
+   b_n \\
+  \end{array}
+  \right)
+\]
+Per a tractar $Pb$ aprofitem el vector de permutació $P$ generat al llarg dels pivotatges. Sabem que $P_i = j$ implica que a la fila $i$
+de la matriu $LU$ hi ha la fila $j$ de la matriu $A$. Aprofitant això, el nostre sistema esdevé:
+\[
+ \left(
+  \begin{array}{ccccc}
+  1			&			&		&		&		\\	
+  m_{21}	&	1		&		&		&		\\
+  m_{31}	&	m_{32}	&	1	&		&		\\
+  \vdots	&	\vdots	&\ddots	&\ddots	& 		\\
+  m_{n1}	&	m_{n2}	&\ldots	&	m_{n,n-1}&	1	\\
+  \end{array}
+  \right)
+  \left(
+  \begin{array}{c}
+   y_1 \\
+   y_2 \\
+   y_3 \\
+   \vdots \\
+   y_n \\
+  \end{array}
+  \right)
+  =
+  \left(
+  \begin{array}{c}
+   b_{P_1} \\
+   b_{P_2} \\
+   b_{P_3} \\
+   \vdots \\
+   b_{P_n} \\
+  \end{array}
+  \right)
+\]
+I ara podem aplicar una substitució endavant, per trobar $y$.
+\begin{align*}
+  y_1 &= b_{P_1} \\
+  y_i &= b_{P_i}-\sum_{j=1}^{i-1}m_{ij}\cdot y_j \quad \forall i = 2 \div n
+\end{align*}
+Implementat literalment
+\begin{lstlisting}[mathescape]
+$y_1 = b_{P_1}$
+for $i = 2 \div n :$
+    $sum = 0$
+    for $j = 1 \div i-1 :$ //multiplicació fila i
+        $sum = sum + a_{ij} * y_j$
+    $y_i = b_{P_i} - sum$
+\end{lstlisting}
+$\star$ En primera instància un podría decidir llegir el vector i permutar-lo; més eficient: guardar-lo al lloc que toca (permutat); o, encara millor
+guardar-lo no permutat (guanyem generalització i es pot reutilizar el vector b ja que no es modifica) que és el que faig.
+\subsubsection{Substitució enrere}
+Ara que tenim $y$ de $Ly = Pb$ polem resoldre:
+\[
+ Ux = y \iff
+ \left(
+  \begin{array}{ccccc}
+  u_{11}&u_{12}	& u_{13}&	\ldots	&	u_{1n}	\\	
+  		&u_{22}	& u_{23}&	\ldots	&	u_{2n}	\\
+  		&		& u_{33}&	\ldots	&	u_{3n}	\\
+  		&		& 		&	\ddots	&	\vdots	\\
+  		&		&		&			&	u_{nn}	\\
+  \end{array}
+  \right)\left(
+  \begin{array}{c}
+   x_1 \\
+   x_2 \\
+   x_3 \\
+   \vdots \\
+   x_n \\
+  \end{array}
+  \right)
+  =
+  \left(
+  \begin{array}{c}
+  y_1 \\
+  y_2 \\
+  y_3 \\
+  \vdots \\
+  y_n \\
+  \end{array}
+  \right)
+\]
+amb una substitució enrere.
+\begin{align*}
+  x_n &= \frac{y_n}{u_{ii}} \\
+  x_i &= \frac{y_i-\sum_{j=i+1}^nu_{ij}\cdot x_j}{u_{ii}} \quad \forall i = n-1 \div 1
+\end{align*}
+Molt similar a l'anterior:
+\begin{lstlisting}[mathescape]
+$x_n = y_n$
+for $i = n-1 \div 1 :$
+    $sum = 0$
+    for $j = i+1 \div n :$ //multiplicació fila i
+        $sum = sum + a_{ij}*x_j$
+    $x_i = (y_i - sum)/a_{ii}$
+\end{lstlisting}
+\subsection{Inversa}
+Ara que tenim implementat els mètodes de substitució endavant i enrere podem aprofitar-los per calcular la inversa de la matriu $A$.
+Busquem $X \in \mathcal{M}_n$ tal que $AX=XA=I$, sabem d'algebra lineal que $AX=I \implies XA=I$ així que volem resoldre:
+\[
+  AX=I \iff PAX = P \iff LUX = P \iff \left.
+  \begin{array}{c}
+   LY = P \\
+   UX = Y \\
+  \end{array}
+  \right\}
+\]
+Tots els càlculs es fan i s'escriuen sobre la mateixa matriu $A^{-1} = b_{ij}$ que són vectors guardats en columnes (per poder usar els mètodes ja implementats).
+Tot i que siguin vectors columnes, mantindré la notació de $b_{ij}$ element de la fila $i$ i columna $j$.
+\subsubsection{LY=P}
+Com que $L$ és invertible $Y=L^{-1}P$ amb $L$ triangular inferior amb 1s a la diagonal i $P$ matriu de permutació: $Y$ serà una permutació d'una matriu
+triangular inferior amb 1s a la diagonal. Podem computar de les següents maneres
+\begin{enumerate}
+ \item Podem resoldre $2n$ sistemes triangulars amb els vectors columna de la identitat aprofitant les substitucions implementades. És la solució que primer
+ s'ens acudeix però no la més eficient: estaríem generant $n$ vectors en memòria (ja sabem que això és molt lent) i tampoc usem que $Y$ és
+ triangular inferior amb 1 a la diagonal.
+ \item Per aprofitar-ho podem resoldre $AX=I$ com:
+ \[
+PAX = P \iff PAXP^t=I \iff LUXP^t = I \iff \left\{\begin{array}{c}
+LY = I \\
+UZ = Y \\
+X = ZP \\
+\end{array}
+\right.
+ \]
+ I llavors en el primer pas $LY=I$ ja sabem que $Y$ és triangular inferior amb 1s a la diagonal; però hem afegit un 3r pas $X=ZP$ on hem de permutar la
+ solució trobada.
+ \item La solució final és resoldre el sistema tal com s'ha plantejat
+ $\left\{\begin{array}{c}
+   LY = P \\
+   UX = Y \\
+  \end{array}
+  \right.
+ $
+ sabent que $Y$ és triangular inferior amb 1s a la diagonal però permutada!
+\end{enumerate}
+Doncs l'algorisme queda, per a cada columna $j$ ($Pt$ el vector de permutació invers, el de $P^t$):
+\begin{align*}
+ k &= Pt_j \quad \text{``la columna j té un 1 a la posició k''} \\
+ y_{ij} &= 0 \quad i = 1 \div k-1 \\
+ y_{kj} &= 1 \\
+ y_{ij} &= -\sum_{s=k}^{i-1}m_{is}\cdot y_{sj} \quad i = k+1 \div n
+\end{align*}
+L'implementació en pseudo-codi:
+\begin{lstlisting}[mathescape]
+for $j = 1 \div n:$
+    $k = Pt_j$ // tenim k-1 zeros...
+    for $i = 1 \div k :$
+        $b_{ij} = 0$
+    $b_{ik} = 1$ // ...i un 1
+    for $i = k+1 \div n :$ //substitució normal
+        $sum = 0$
+        for $s = k+1 \div i-1 :$
+            $sum = sum + a_{is}*b_{sj}$
+        $b_{ij} = -sum$
+\end{lstlisting}
+\subsubsection{UX=Y}
+Aquesta substitució és plena (genera $A^{-1}$) i l'única millora seria no accedir als elements de $Y$ que són nuls i directament guardar la suma negativa,
+però això complica el codi (s'hauria d'especialitzar la substitució enrere accedint al vector i comparant) i no val la pena. Per això utilitzo el
+mètode de substitució enrere descrit prèviament per a cada columna.
+\subsection{Determinant}
+Amb la descomposició $LU$ és molt ràpid càlcular el determinant de $A$:
+\begin{equation*}
+  PA = LU \iff A = P^{-1}LU \implies det(A) = det(P^{-1})\cdot det(L) \cdot det(U) = \pm1\cdot 1 \cdot det(U) = \pm \prod_{i=1}^nu_{ii}
+\end{equation*}
+On el signe és el signe de la permutació de la matriu $P$ que s'ha anat guardant en un booleà mentres es feien els pivotatges.
+\begin{lstlisting}[mathescape]
+if $signP : det = -1$
+else $: det = 1$
+for $i = 1\div n : det = det * a_{ii}$
+\end{lstlisting}
+\section{Comentaris}
+Al llarg de la pràctica han sortits detalls tècnics que han sigut reflexionats per tal de ser el més òptim possible, dels quals els més importants estan aquí
+\subsection{$\|PA-LU\|_\infty$}
+Aquesta operació és bastant costosa pel càlcul de $L\cdot U$ però no hem d'incrementar el cost amb processos ``inútils'' com :
+\begin{enumerate}
+ \item Permutar $A$ o, pitjor, generar la matriu $PA$
+ \item Generar i guardar la matriu $L\cdot U$
+ \item Guardar la resta d'aquestes matrius
+\end{enumerate}
+La millor opció (que he trobat) és calcular per a cada $a_{ij}$ de $A$ l'element $(L\cdot U)_{ij}$ corresponent tenint en compta la permutació
+($\|PA-LU\|_\infty = \|A-P^{-1}LU\|_\infty$, $P$ permutació de files) computar la substracció i usar aquesta en el comput de la norma.
+Així assignem a memòria que només necessitem un cop.
+\subsection{Escriptura aleatoria i push\_back}
+Per inicialitzar un vector utilitzem dues tècniques:
+\begin{description}
+ \item[Accés aleatori] \hfill \\
+ Ens generem els $n$ elements del vector, és a dir, es creen $n$ instàncies per defecte; així podem accedir als elements amb $v[i]$ i guardar els elements
+ on volem.
+ \item[push\_back] \hfill \\
+ Si els elements es guarden de forma seqüèncial del primer a l'últim, podem evitar inicialitzar $n$ element i només canviar la capacitat del vector
+ (els elements que pot contenir) i utilitzar $v.push\_back(q)$ per afegir $q$ al final del vector.
+\end{description}
+\subsection{Comprovació}
+Està molt bé implementar el mètode però, funciona? Podem provar el funcionament general amb alguns casos senzills de dimensions petites però no és suficient.
+Per això he creat un programa que em genera matrius i vectors aleatoris amb les dimensions que desitji i els elements en el rang que li indiqui.
+D'aquesta manera he pogut provar matrius de dimensions 10, 50, 100, 200, 500 i 1000 principalment. \\
+$\star$ Nota: les matrius aleatories tenen rang màxim amb probabilitat 1 així que cap problema.
+\subsection{Cost temporal}
+També volia saber quin temps tardava el meu programa i en quina mesura augmentava en funció de la dimensió, així que vaig aprofitar el generador:
+Aquest són temps compilant amb g++ -std=c+11 -O2 sobre un Intel Core i3 M380:
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|l|l|l|}
+\hline
+Dimensió & 10       & 20      & 50      & 100       & 300     & 500     & 1000    \\ \hline
+Temps    & 1.543 ms & 2.83 ms & 8.49 ms & 31.678 ms & 0.272 s & 0.924 s & 7.768 s \\ \hline
+\end{tabular}
+\end{table}
+\subsection{Proporció de costos}
+Utilitzant l'eina gprof de GNU puc saber quines són les operacions que més temps empren. Com que per matrius petites el procés és quasi instantani
+i no s'obté suficient informació, els resultats són per matrius 500x500; sense optimitzacions del compilador.
+Els costos de les functions en proporció temporal són:
+\begin{itemize}
+ \item 37.5\% càlcul de la inversa
+ \item 31.4\% descomposició LU
+ \item 24.3\% $\|PA-LU\|_\infty$
+ \item 0.1\%  resolució Ax=b
+ \item 0.0\%  det(A)
+\end{itemize}
+Cal remarcar que 36.6\% del temps es fan accesos a elements de les matrius; i que 24\% del temps de la descomposició és pel pivotatge.
+\end{document}
+
+
+
+
+
+
+
+
