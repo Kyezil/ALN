@@ -5,12 +5,12 @@
  * @version 1.0 01/04/15
 
 Compilation:
-g++ -std=c++11 generator.cc -o generator.exe
+g++ -std=c++11 generator.cc -o generator.out
 
 Use :
-./generator.exe             generate with default parameters
-./generator.exe N           generate matrix NxN and vector Nx1 with default range
-./generator.exe N min max   same as above but element range = [min,max]
+./generator.out             generate with default parameters
+./generator.out N           generate matrix NxN and vector Nx1 with default range
+./generator.out N min max   same as above but element range = [min,max]
 
 N        : unsigned int >= 0        default = 10
 min, max : double (min <= max)      default = -100, 100
