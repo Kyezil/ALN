@@ -7,19 +7,18 @@ function take_the_tour(x,y)
     axis([min - 0.1*sep, max + 0.1*sep]);
     X = linspace(min,max);
     n = length(x);
-    Y = []; % guarda les evaluacions
     for m = 0:n-1
         plot(x,y,'@'); % els punts
         p = polminquad(x,y,m);
         hold on;
         Ym = polyval(fliplr(p),X);
-        if m > 0
-            plot(X, Y(:,end)', ':r');
-        endif
         plot(X, Ym, 'r');
-        Y = [Y,Ym'];
+        if m > 0
+            plot(X, Y', ':r');
+        endif
+        Y = Ym';
+        wait = input("Press Enter...");
         hold off;
-        wait = input("Press Enter to follow");
     endfor
 endfunction
 
@@ -40,17 +39,16 @@ function [coeff, norm2_res] = polminquad(x,y,m)
 endfunction
 
 function [Q,R] = decompQR_GS(A)
-    Q = A;
-    n = columns(A);
+    [m,n] = size(A);
+    Q = zeros(m,n);
+    R = zeros(n);
     for j = 1:n
-        R(j,j) = norm(Q(:,j));
-        Q(:,j) = Q(:,j) / R(j,j); % normalitza
-        for k = j+1:n % ortogonalitza les altres
-            R(j,k) = dot(Q(:,j), Q(:,k));
-            Q(:,k) = Q(:,k) - R(j,k) .* Q(:,j);
-        endfor
+        R(j,j) = norm(A(:,j));
+        Q(:,j) = A(:,j) / R(j,j); % normalitza
+        R(j,j+1:n) = Q(:,j)'*A(:,j+1:n);
+        A(:,j+1:n) = A(:,j+1:n) - Q(:,j)*R(j,j+1:n);
     endfor
     % comprovació Q'Q = Id
-    normaQ = norm(Q'*Q - eye(m), Inf);
+    normaQ = norm(Q'*Q - eye(n), Inf);
     fprintf("||QtQ - Id||inf = %e\n", normaQ);
 endfunction
