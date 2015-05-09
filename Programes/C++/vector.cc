@@ -43,32 +43,32 @@ double Vector::operator*(Vector const &other) const {
     return dot;
 }
 
-Vector Vector::operator*(double a) const {
+Vector Vector::operator*(double const a) const {
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
         res.m_v[i] = m_v[i]*a;
     return res;
 }
-Vector Vector::operator/(double a) const {
+Vector Vector::operator/(double const a) const {
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
         res.m_v[i] = m_v[i]/a;
     return res;
 }
-Vector& Vector::operator*=(double a) {
+Vector& Vector::operator*=(double const a) {
     for (int i = 0; i < m_v.size(); ++i)
         m_v[i] *= a;
     return *this;
 }
-Vector& Vector::operator/=(double a) {
+Vector& Vector::operator/=(double const a) {
     for (int i = 0; i < m_v.size(); ++i)
         m_v[i] /= a;
     return *this;
 }
 
-double Vector::operator[](int i) const { return m_v[i-1]; }
-double& Vector::operator[](int i) { return m_v[i-1]; }
-void Vector::swap(int i, int j) { std::swap(m_v[i-1],m_v[j-1]); }
+double Vector::operator[](int const i) const { return m_v[i-1]; }
+double& Vector::operator[](int const i) { return m_v[i-1]; }
+void Vector::swap(int const i, int const j) { std::swap(m_v[i-1],m_v[j-1]); }
 
 int Vector::size() const { return m_v.size(); }
 
@@ -83,19 +83,19 @@ void Vector::print(std::ostream& os, Vector const &v) {
     os << "]\n";
 }
 
-double Vector::norm1(const Vector &v) {
+double Vector::norm1(Vector const &v) {
     double norm = 0;
     for (int i = 0; i < v.m_v.size(); ++i)
         norm += fabs(v.m_v[i]);
     return norm;
 }
-double Vector::norm2(const Vector &v) {
+double Vector::norm2(Vector const &v) {
     double norm = 0;
     for (int i = 0; i < v.m_v.size(); ++i)
         norm += v.m_v[i]*v.m_v[i];
     return sqrt(norm);
 }
-double Vector::normInf(const Vector &v) {
+double Vector::normInf(Vector const &v) {
     double norm = 0;
     for (int i = 0; i < v.m_v.size(); ++i) {
         double el = fabs(v.m_v[i]);

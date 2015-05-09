@@ -9,7 +9,7 @@ class Vector {
         std::vector<double> m_v;
     public:
         // Crea un vector de mida c_size
-        Vector(int c_size);
+        Vector(int const c_size);
 
         // OPERACIONS VECTORIALS
         Vector operator-() const;
@@ -20,20 +20,20 @@ class Vector {
         double operator*(Vector const &other) const; //producte escalar
 
         // OPERACIONS PER ESCALARS
-        Vector operator*(double a) const;
-        Vector operator/(double a) const;
-        Vector& operator*=(double a);
-        Vector& operator/=(double a);
+        Vector operator*(double const a) const;
+        Vector operator/(double const a) const;
+        Vector& operator*=(double const a);
+        Vector& operator/=(double const a);
 
         // Accés element rvalue
-        double operator[](int i) const;
+        double operator[](int const i) const;
         // Accés element lvalue
-        double& operator[](int i);
+        double& operator[](int const i);
         // Output
         friend std::ostream& operator<<(std::ostream& os, Vector const &v);
 
         // Permuta 2 elements
-        void swap(int i, int j);
+        void swap(int const i, int const j);
 
         // Consulta la mida
         int size() const;
@@ -41,8 +41,8 @@ class Vector {
         // Print vector [#,#,...,#]
         static void print(std::ostream& os, Vector const &v);
         // Càlcul de normes convencionals
-        static double norm1(const Vector &v);
-        static double norm2(const Vector &v);
-        static double normInf(const Vector &v);
+        static double norm1(Vector const &v);
+        static double norm2(Vector const &v);
+        static double normInf(Vector const &v);
 };
 #endif
