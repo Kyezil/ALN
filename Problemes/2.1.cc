@@ -30,6 +30,8 @@ double fraccont(double x, vector<long> &an, int &n) {
         err = fabs(x_c - double(p1)/q1);
         printf("%ld\t: %ld/%ld\n", a,p1,q1);
     }
+    x = x_c;
+    //printf("%d %ld %ld %e\n", n, p1, q1, err);
     return err;
 }
 
