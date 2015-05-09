@@ -8,4 +8,4 @@ En aquest fitxer estan definides:
 
 2. Una funció de mostra: take_the_tour(x,y)
     Donada x,y mostra per pantalla els diversos polinomis aproximants
-    amb grau creixen (apretar Enter per avançar).
+    amb graus creixents (prémer Enter per avançar).
