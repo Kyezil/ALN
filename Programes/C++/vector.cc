@@ -69,7 +69,7 @@ Vector& Vector::operator/=(double const a) {
 double Vector::operator[](int const i) const { return m_v[i-1]; }
 double& Vector::operator[](int const i) { return m_v[i-1]; }
 void Vector::swap(int const i, int const j) { std::swap(m_v[i-1],m_v[j-1]); }
-
+void Vector::swap(Vector &v) { m_v.swap(v.m_v); }
 int Vector::size() const { return m_v.size(); }
 
 void Vector::print(std::ostream& os, Vector const &v) {

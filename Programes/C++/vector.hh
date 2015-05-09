@@ -34,6 +34,8 @@ class Vector {
 
         // Permuta 2 elements
         void swap(int const i, int const j);
+        // Permuta amb un altre vector
+        void swap(Vector &v);
 
         // Consulta la mida
         int size() const;
