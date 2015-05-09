@@ -2,7 +2,6 @@
 #include <vector>
 #include <cmath>
 #include <cfenv>
-
 #define eps 1e-9
 using namespace std;
 
@@ -51,5 +50,5 @@ int main() {
     vector<long int> an;
     double err = fraccont(x,an,n);
     print_frac(an);
-    cout << "eps = " << err << endl;
+    printf("eps = %e\nn = %d\n", err, n);
 }
