@@ -12,16 +12,16 @@ class Vector {
         Vector(int c_size);
 
         // OPERACIONS VECTORIALS
-        Vector operator-();
-        Vector operator+(Vector const &other);
-        Vector operator-(Vector const &other);
+        Vector operator-() const;
+        Vector operator+(Vector const &other) const;
+        Vector operator-(Vector const &other) const;
         Vector& operator+=(Vector const &other);
         Vector& operator-=(Vector const &other);
-        double operator*(Vector const &other); //producte escalar
+        double operator*(Vector const &other) const; //producte escalar
 
         // OPERACIONS PER ESCALARS
-        Vector operator*(double a);
-        Vector operator/(double a);
+        Vector operator*(double a) const;
+        Vector operator/(double a) const;
         Vector& operator*=(double a);
         Vector& operator/=(double a);
 

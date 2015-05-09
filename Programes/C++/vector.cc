@@ -3,20 +3,20 @@ Vector::Vector(int c_size) {
     m_v.resize(c_size);
 }
 
-Vector Vector::operator-() {
+Vector Vector::operator-() const {
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
         res.m_v[i] = -m_v[i];
     return res;
 }
-Vector Vector::operator+(Vector const &other) {
+Vector Vector::operator+(Vector const &other) const {
     assert(m_v.size() == other.m_v.size());
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
         res.m_v[i] = m_v[i] + other.m_v[i];
     return res;
 }
-Vector Vector::operator-(Vector const &other) {
+Vector Vector::operator-(Vector const &other) const {
     assert(m_v.size() == other.m_v.size());
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
@@ -35,7 +35,7 @@ Vector& Vector::operator-=(Vector const &other) {
         m_v[i] -= other.m_v[i];
     return *this;
 }
-double Vector::operator*(Vector const &other) {
+double Vector::operator*(Vector const &other) const {
     assert(m_v.size() == other.m_v.size());
     double dot = 0;
     for (int i = 0; i < m_v.size(); ++i)
@@ -43,13 +43,13 @@ double Vector::operator*(Vector const &other) {
     return dot;
 }
 
-Vector Vector::operator*(double a) {
+Vector Vector::operator*(double a) const {
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
         res.m_v[i] = m_v[i]*a;
     return res;
 }
-Vector Vector::operator/(double a) {
+Vector Vector::operator/(double a) const {
     Vector res(m_v.size());
     for (int i = 0; i < res.m_v.size(); ++i)
         res.m_v[i] = m_v[i]/a;
