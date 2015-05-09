@@ -39,7 +39,9 @@ double Vector::operator*(Vector const &other) {
 double Vector::operator[](int i) const { return m_v[i]; }
 double& Vector::operator[](int i) { return m_v[i]; }
 
-void Vector::swap(int i, int j) { swap(m_v[i],m_v[j]); }
+double Vector::operator[](int i) const { return m_v[i-1]; }
+double& Vector::operator[](int i) { return m_v[i-1]; }
+void Vector::swap(int i, int j) { std::swap(m_v[i-1],m_v[j-1]); }
 
 int Vector::size() const { return m_v.size(); }
 
