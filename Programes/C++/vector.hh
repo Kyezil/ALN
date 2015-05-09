@@ -27,9 +27,9 @@ class Vector {
         double operator*(Vector const &other);
 
         // Accés element rvalue
-        double operator()(int i) const;
+        double operator[](int i) const;
         // Accés element lvalue
-        double& operator()(int i);
+        double& operator[](int i);
 
         // Permuta 2 elements
         void swap(int i, int j);
