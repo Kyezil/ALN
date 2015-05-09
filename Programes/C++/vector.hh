@@ -11,9 +11,13 @@ class Vector {
         Vector(int c_size);
 
         // Suma convencional
-        Vector& operator+(Vector const &other);
+        Vector operator+(Vector const &other);
         // Resta convencional
-        Vector& operator-(Vector const &other);
+        Vector operator-(Vector const &other);
+        // Suma convencional
+        Vector& operator+=(Vector const &other);
+        // Resta convencional
+        Vector& operator-=(Vector const &other);
         // Producte escalar de vectors
         double operator*(Vector const &other);
 

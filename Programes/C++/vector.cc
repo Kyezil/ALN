@@ -2,21 +2,38 @@
 Vector::Vector(int c_size) {
     m_v.resize(c_size);
 }
-Vector& Vector::operator+(Vector const &other) {
+Vector Vector::operator+(Vector const &other) {
     assert(m_v.size() == other.m_v.size());
-    for (int i = 0; i < m_v.size(); ++i)
-        m_v[i] = m_v[i] + other.m_v[i];
+    Vector res(m_v.size());
+    for (int i = 0; i < res.m_v.size(); ++i)
+        res.m_v[i] = m_v[i] + other.m_v[i];
+    return res;
 }
-Vector& Vector::operator-(Vector const &other) {
+Vector Vector::operator-(Vector const &other) {
+    assert(m_v.size() == other.m_v.size());
+    Vector res(m_v.size());
+    for (int i = 0; i < res.m_v.size(); ++i)
+        res.m_v[i] = m_v[i] -  other.m_v[i];
+    return res;
+}
+Vector& Vector::operator+=(Vector const &other) {
     assert(m_v.size() == other.m_v.size());
     for (int i = 0; i < m_v.size(); ++i)
-        m_v[i] = m_v[i] - other.m_v[i];
+        m_v[i] += other.m_v[i];
+    return *this;
+}
+Vector& Vector::operator-=(Vector const &other) {
+    assert(m_v.size() == other.m_v.size());
+    for (int i = 0; i < m_v.size(); ++i)
+        m_v[i] -= other.m_v[i];
+    return *this;
 }
 double Vector::operator*(Vector const &other) { 
     assert(m_v.size() == other.m_v.size());
     double dot = 0;
     for (int i = 0; i < m_v.size(); ++i)
         dot +=  m_v[i]*other.m_v[i];
+    return dot;
 }
 
 double Vector::operator[](int i) const { return m_v[i]; }
