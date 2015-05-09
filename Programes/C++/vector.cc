@@ -1,39 +1,48 @@
 #include "vector.hh"
-Vector::Vector(int c_size) : m_size(c_size) {
-    m_v = new double [m_size];
+Vector::Vector(int c_size) {
+    m_v.resize(c_size);
 }
-Vector::Vector(Vector const &other) : m_size(other.m_size) {
-    m_v = new double [m_size];
-    for (int i = 0; i < m_size; ++i) m_v[i] = other.m_v[i];
+Vector& Vector::operator+(Vector const &other) {
+    assert(m_v.size() == other.m_v.size());
+    for (int i = 0; i < m_v.size(); ++i)
+        m_v[i] = m_v[i] + other.m_v[i];
 }
-Vector::Vector(Vector &&other) : m_v(other.m_v), m_size(other.m_size) {
-    other.m_size = 0;
-    other.m_v = nullptr;
+Vector& Vector::operator-(Vector const &other) {
+    assert(m_v.size() == other.m_v.size());
+    for (int i = 0; i < m_v.size(); ++i)
+        m_v[i] = m_v[i] - other.m_v[i];
 }
-Vector::~Vector(){
-    if (m_v != nullptr) delete[] m_v;
+double Vector::operator*(Vector const &other) { 
+    assert(m_v.size() == other.m_v.size());
+    double dot = 0;
+    for (int i = 0; i < m_v.size(); ++i)
+        dot +=  m_v[i]*other.m_v[i];
 }
 
-Vector& Vector::operator=(Vector const &other){}
-Vector& Vector::operator=(Vector const &&other) {
-    if (this != &other) {
-        delete[] m_v;
-        m_size = other.m_size;
-        m_v = other.m_v;
-        other.m_v = nullptr;
+double Vector::operator[](int i) const { return m_v[i]; }
+double& Vector::operator[](int i) { return m_v[i]; }
+
+void Vector::swap(int i, int j) { swap(m_v[i],m_v[j]); }
+
+int Vector::size() const { return m_v.size(); }
+
+double Vector::norm1(const Vector &v) {
+    double norm = 0;
+    for (int i = 0; i < v.m_v.size(); ++i)
+        norm += fabs(v.m_v[i]);
+    return norm;
+}
+double Vector::norm2(const Vector &v) {
+    double norm = 0;
+    for (int i = 0; i < v.m_v.size(); ++i)
+        norm += v.m_v[i]*v.m_v[i];
+    return sqrt(norm);
+}
+double Vector::normInf(const Vector &v) {
+    double norm = 0;
+    for (int i = 0; i < v.m_v.size(); ++i) {
+        double el = fabs(v.m_v[i]);
+        if (el > norm) norm = el;
     }
+    return norm;
 }
-Vector& Vector::operator+(Vector const &other){}
-Vector& Vector::operator-(Vector const &other){}
-double Vector::operator*(Vector const &other){}
-
-double Vector::operator[](int i) const{}
-double& Vector::operator[](int i){}
-
-void Vector::swap(int i, int j){}
-
-int Vector::size() const{}
-
-double Vector::norm1(const Vector &v){}
-double Vector::norm2(const Vector &v){}
-double Vector::normInf(const Vector &v){}

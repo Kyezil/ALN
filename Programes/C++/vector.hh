@@ -1,24 +1,15 @@
 #ifndef VECTOR_HH
 #define VECTOR_HH
+#include <vector>
 #include <cassert>
+#include <cmath>
 class Vector {
     private:
-        double * m_v;
-        int m_size;
+        std::vector<double> m_v;
     public:
         // Crea un vector de mida c_size
         Vector(int c_size);
-        // Crea una copia de other
-        Vector(Vector const &other);
-        // Crea per desplaçament
-        Vector(Vector &&other);
-        // Destructor
-        ~Vector();
 
-        // Assignació
-        Vector& operator=(Vector const &other);
-        // Desplaçament
-        Vector& operator=(Vector const &&other);
         // Suma convencional
         Vector& operator+(Vector const &other);
         // Resta convencional
