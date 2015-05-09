@@ -43,6 +43,17 @@ void Vector::swap(int i, int j) { swap(m_v[i],m_v[j]); }
 
 int Vector::size() const { return m_v.size(); }
 
+void Vector::print(std::ostream& os, Vector const &v) {
+    int n = v.m_v.size();
+    os << '[';
+    if (n > 1) {
+        os << v.m_v[0];
+        for (int i = 1; i < v.m_v.size(); ++i)
+            os << ',' << v.m_v[i];
+    }
+    os << "]\n";
+}
+
 double Vector::norm1(const Vector &v) {
     double norm = 0;
     for (int i = 0; i < v.m_v.size(); ++i)
@@ -62,4 +73,15 @@ double Vector::normInf(const Vector &v) {
         if (el > norm) norm = el;
     }
     return norm;
+}
+
+// NON MEMBER FUNCTIONS
+std::ostream& operator<<(std::ostream& os, Vector const &v) {
+    int n = v.m_v.size();
+    if (n > 1) {
+        os << v.m_v[0];
+        for (int i = 1; i < v.m_v.size(); ++i)
+            os << ' ' << v.m_v[i];
+    }
+    return os;
 }

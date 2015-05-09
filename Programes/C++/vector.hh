@@ -1,8 +1,9 @@
 #ifndef VECTOR_HH
 #define VECTOR_HH
 #include <vector>
-#include <cassert>
 #include <cmath>
+#include <cassert>
+#include <ostream>
 class Vector {
     private:
         std::vector<double> m_v;
@@ -25,6 +26,8 @@ class Vector {
         double operator[](int i) const;
         // Accés element lvalue
         double& operator[](int i);
+        // Output
+        friend std::ostream& operator<<(std::ostream& os, Vector const &v);
 
         // Permuta 2 elements
         void swap(int i, int j);
@@ -32,6 +35,8 @@ class Vector {
         // Consulta la mida
         int size() const;
 
+        // Print vector [#,#,...,#]
+        static void print(std::ostream& os, Vector const &v);
         // Càlcul de normes convencionals
         static double norm1(const Vector &v);
         static double norm2(const Vector &v);
