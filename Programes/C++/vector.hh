@@ -11,16 +11,19 @@ class Vector {
         // Crea un vector de mida c_size
         Vector(int c_size);
 
-        // Suma convencional
+        // OPERACIONS VECTORIALS
+        Vector operator-();
         Vector operator+(Vector const &other);
-        // Resta convencional
         Vector operator-(Vector const &other);
-        // Suma convencional
         Vector& operator+=(Vector const &other);
-        // Resta convencional
         Vector& operator-=(Vector const &other);
-        // Producte escalar de vectors
-        double operator*(Vector const &other);
+        double operator*(Vector const &other); //producte escalar
+
+        // OPERACIONS PER ESCALARS
+        Vector operator*(double a);
+        Vector operator/(double a);
+        Vector& operator*=(double a);
+        Vector& operator/=(double a);
 
         // Accés element rvalue
         double operator[](int i) const;
