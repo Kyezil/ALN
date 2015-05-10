@@ -12,6 +12,6 @@ function [x] = gauss_elim(A, B)
         B(i+1:n,:) = B(i+1:n,:) + m*B(i,:);
     endfor
 
-    % suBstitució enrere
+    % substitució enrere
     x = back_substitution(A,B);
 endfunction
