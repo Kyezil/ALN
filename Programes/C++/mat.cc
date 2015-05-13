@@ -1,6 +1,6 @@
 #include "mat.hh"
-Mat::Mat(const int rows, const int columns) :
-    rows_(rows), cols_(columns), data_(rows * columns) {}
+Mat::Mat(const int nr, const int nc) :
+    rows_(nr), cols_(nc), data_(nr * nc) {}
 
 int Mat::rows() const {
     return rows_;
@@ -39,4 +39,25 @@ Mat Mat::transpose() {
     for (int i = 0; i < rows_; ++i)
         result.col(i) = static_cast<std::valarray<double> > (row(i));
     return result;
+}
+
+/* IN/OUT OPERATIONS */
+std::ostream& operator<<(std::ostream& os, const Mat& mat) {
+    if (mat.rows() < 1 or mat.cols() < 1) os << "[ ]";
+    else {
+        for (int i = 1; i <= mat.rows(); ++i) {
+            os << '|' << mat(i,1);
+            for (int j = 2; j <= mat.cols(); ++j)
+                os << ' ' << mat(i,j);
+            os << "|\n";
+        }
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& in, Mat& mat) {
+    for (int i = 1; i <= mat.rows(); ++i)
+        for (int j = 1; j <= mat.cols(); ++j)
+            in >> mat(i,j);
+    return in;
 }

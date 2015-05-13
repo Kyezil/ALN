@@ -1,7 +1,7 @@
 #ifndef MAT_HH
 #define MAT_HH
 #include <valarray>
-
+#include <iostream>
 class Mat {
     public:
         // creates an empty rows x size matrix
@@ -35,4 +35,7 @@ class Mat {
         int cols_;
         std::valarray<double> data_;
 };
+// IN/OUT
+std::ostream& operator<<(std::ostream& os, const Mat& mat);
+std::istream& operator>>(std::istream& in, Mat& mat);
 #endif
