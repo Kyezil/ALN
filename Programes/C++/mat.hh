@@ -23,9 +23,9 @@ class Mat {
         std::slice_array<double> col(const int c);
 
         // basic item reference
-        double & operator()(const int r, const int c);
+        double & operator()(const int r, const int c = 1);
         // basic item retrieval
-        double operator()(const int r, const int c) const;
+        double operator()(const int r, const int c = 1) const;
 
         // permuta dues files/columnes
         void swap_row(const int r1, const int r2);
@@ -37,7 +37,10 @@ class Mat {
         // normes matricials
         static double norm1(const Mat &mat);
         static double normInf(const Mat &mat);
-
+        // normes vectorials
+        static double norm1(const std::valarray<double>& d);
+        static double normInf(const std::valarray<double>& d);
+        static double norm2(const std::valarray<double>& d);
     protected:
         int rows_;
         int cols_;

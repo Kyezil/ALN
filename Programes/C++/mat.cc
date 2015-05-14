@@ -73,6 +73,26 @@ double Mat::normInf(const Mat &mat) {
     return norm;
 }
 
+double Mat::norm1(const std::valarray<double>& d) {
+    double sum = 0;
+    for (int i = 0; i < d.size(); ++i) sum += fabs(d[i]);
+    return sum;
+}
+
+double Mat::normInf(const std::valarray<double>& d) {
+    double norm = 0;
+    for (int i = 0; i < d.size(); ++i) {
+        double el = fabs(d[i]);
+        if (el > norm) norm = el;
+    }
+    return norm;
+}
+
+double Mat::norm2(const std::valarray<double>& d) {
+    double norm = 0;
+    for (int i = 0; i < d.size(); ++i)  norm += d[i]*d[i];
+    return std::sqrt(norm);
+}
 /* IN/OUT OPERATIONS */
 std::ostream& operator<<(std::ostream& os, const Mat& mat) {
     if (mat.rows() < 1 or mat.cols() < 1) os << "[ ]";
