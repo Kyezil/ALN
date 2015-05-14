@@ -34,6 +34,18 @@ double Mat::operator()(const int r, const int c) const {
     return data_[(r-1) * cols_ + c-1];
 }
 
+void Mat::swap_row(const int r1, const int r2) {
+    std::valarray<double> tmp = row(r1);
+    row(r1) = row(r2);
+    row(r2) = tmp;
+}
+
+void Mat::swap_col(const int c1, const int c2) {
+    std::valarray<double> tmp = col(c1);
+    col(c1) = col(c2);
+    col(c2) = tmp;
+}
+
 Mat Mat::transpose() {
     Mat result(cols_, rows_);
     for (int i = 0; i < rows_; ++i)
