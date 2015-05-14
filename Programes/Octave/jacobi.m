@@ -36,8 +36,9 @@ function [x dx k] = jacobi2(A,b,x0,tol,maxit)
     % [OUT] k iteració on s'ha parat  enter
     % condició radi espectral de (D\(A-D)) < 1
     n = length(b);
-    B = - diag(1 ./ diag(A)) * (A-diag(diag(A)));
-    c = - diag(1 ./ diag(A)) * b;
+    P = diag(diag(A));
+    B = P\(A-P);
+    c = P\b;
     x = x0;
     for k = 1:maxit
         x = B*x0 + c;
