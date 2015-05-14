@@ -16,17 +16,21 @@ class Mat {
         std::valarray<double> row(const int r) const;
         // retrieve the data from col c of the matrix
         std::valarray<double> col(const int c) const;
+        // retrieve data to diag
+        std::valarray<double> diag() const;
 
         // retrieve refernce to the data from row r of the matrix
         std::slice_array<double> row(const int r);
         // retrieve refernce to the data from col c of the matrix
         std::slice_array<double> col(const int c);
+        // retrieve reference to diag
+        std::slice_array<double> diag();
 
         // basic item reference
         double & operator()(const int r, const int c = 1);
         // basic item retrieval
         double operator()(const int r, const int c = 1) const;
-
+        
         // permuta dues files/columnes
         void swap_row(const int r1, const int r2);
         void swap_col(const int c1, const int c2);

@@ -18,12 +18,20 @@ std::valarray<double> Mat::col(const int c) const {
     return data_[std::slice(c-1, rows_, cols_)];
 }
 
+std::valarray<double> Mat::diag() const {
+    return data_[std::slice(0, rows_, cols_+1)];
+}
+
 std::slice_array<double> Mat::row(const int r) {
     return data_[std::slice((r-1) * cols_, cols_, 1)];
 }
 
 std::slice_array<double> Mat::col(const int c) {
     return data_[std::slice(c-1, rows_, cols_)];
+}
+
+std::slice_array<double> Mat::diag() {
+    return data_[std::slice(0, rows_, cols_+1)];
 }
 
 double& Mat::operator()(const int r, const int c) {
