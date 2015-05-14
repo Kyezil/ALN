@@ -16,3 +16,13 @@ function [Q,R] = QR_GS(A)
 %    normaQ = norm(Q'*Q - eye(n), Inf);
 %    fprintf("||QtQ - Id||inf = %e\n", normaQ);
 endfunction
+
+function [X] = solveQR(Q,R,B)
+% Resolució SL amb descomposició QR
+% [IN] Q matriu mxn ortogonal
+% [IN] R matriu nxn triangular superior
+% [IN] B matriu mxk matriu termes independents
+% [OUT] X solució del sistema
+% A = QR => AX=B <=> QRX = B <=> RX = Q'B
+    X = R\(Q'*B);
+endfunction
