@@ -49,6 +49,7 @@ class Mat {
         static double norm1(const std::valarray<double>& d);
         static double normInf(const std::valarray<double>& d);
         static double norm2(const std::valarray<double>& d);
+        static void printOctave(const Mat& m, std::ostream& out);
     protected:
         int rows_;
         int cols_;

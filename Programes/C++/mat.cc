@@ -109,6 +109,18 @@ double Mat::norm2(const std::valarray<double>& d) {
     for (int i = 0; i < d.size(); ++i)  norm += d[i]*d[i];
     return std::sqrt(norm);
 }
+void Mat::printOctave(const Mat& mat, std::ostream& out) {
+    int m = mat.rows();
+    int n = mat.cols();
+    out << '[';
+    for (int i = 1; i <= m; ++i) {
+        if (i > 1) out << ";\n";
+        if (n >= 1) out << mat(i,1);
+        for (int j = 2; j <= n; ++j)
+            out << ',' << mat(i,j);
+    }
+    out << ']';
+}
 /* IN/OUT OPERATIONS */
 std::ostream& operator<<(std::ostream& os, const Mat& mat) {
     if (mat.rows() < 1 or mat.cols() < 1) os << "[ ]";
