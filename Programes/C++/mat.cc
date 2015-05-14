@@ -1,6 +1,6 @@
 #include "mat.hh"
 Mat::Mat(const int nr, const int nc) :
-    rows_(nr), cols_(nc), data_(nr * nc) {}
+    rows_(nr), cols_(nc), data_(0.0, nr * nc) {}
 
 int Mat::rows() const {
     return rows_;
