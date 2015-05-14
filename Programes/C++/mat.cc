@@ -42,6 +42,14 @@ double Mat::operator()(const int r, const int c) const {
     return data_[(r-1) * cols_ + c-1];
 }
 
+std::valarray<double> Mat::operator[] (std::slice s) const {
+    return data_[s];
+}
+
+std::slice_array<double> Mat::operator[](std::slice s) {
+    return data_[s];
+}
+
 void Mat::swap_row(const int r1, const int r2) {
     std::valarray<double> tmp = row(r1);
     row(r1) = row(r2);

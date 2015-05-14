@@ -31,6 +31,10 @@ class Mat {
         // basic item retrieval
         double operator()(const int r, const int c = 1) const;
         
+        // advanced item retrieval
+        std::valarray<double> operator[] (std::slice s) const;
+        std::slice_array<double> operator[](std::slice s);
+
         // permuta dues files/columnes
         void swap_row(const int r1, const int r2);
         void swap_col(const int c1, const int c2);
