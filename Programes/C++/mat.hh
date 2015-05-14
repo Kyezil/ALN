@@ -26,13 +26,17 @@ class Mat {
         double & operator()(const int r, const int c);
         // basic item retrieval
         double operator()(const int r, const int c) const;
-       
+
         // permuta dues files/columnes
         void swap_row(const int r1, const int r2);
         void swap_col(const int c1, const int c2);
 
         // genetate a new matrix that is the transposition of this one
         Mat transpose();
+
+        // normes matricials
+        static double norm1(const Mat &mat);
+        static double normInf(const Mat &mat);
 
     protected:
         int rows_;

@@ -53,6 +53,26 @@ Mat Mat::transpose() {
     return result;
 }
 
+double Mat::norm1(const Mat &mat) {
+    double norm = 0;
+    for (int j = 1; j <= mat.cols(); ++j) {
+        double sum_j = 0;
+        for (int i = 1; i <= mat.rows(); ++i) sum_j += std::fabs(mat(i,j));
+        if (sum_j > norm) norm = sum_j;
+    }
+    return norm;
+}
+
+double Mat::normInf(const Mat &mat) {
+    double norm = 0;
+    for (int i = 1; i <= mat.rows(); ++i) {
+        double sum_i = 0;
+        for (int j = 1; j <= mat.cols(); ++j) sum_i += std::fabs(mat(i,j));
+        if (sum_i > norm) norm = sum_i;
+    }
+    return norm;
+}
+
 /* IN/OUT OPERATIONS */
 std::ostream& operator<<(std::ostream& os, const Mat& mat) {
     if (mat.rows() < 1 or mat.cols() < 1) os << "[ ]";
