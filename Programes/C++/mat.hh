@@ -44,7 +44,7 @@ class Mat {
         void swap_col(const int c1, const int c2);
 
         // genetate a new matrix that is the transposition of this one
-        Mat transpose();
+        static Mat transpose(const Mat& A);
 
         // forward substitution
         static void fwsb(const Mat& L, Mat& X, const Mat& B);

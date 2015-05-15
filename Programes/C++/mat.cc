@@ -74,14 +74,14 @@ void Mat::swap_col(const int c1, const int c2) {
     col(c2) = tmp;
 }
 
-Mat Mat::transpose() {
-    Mat result(cols_, rows_);
-    for (int i = 0; i < rows_; ++i)
-        result.col(i) = static_cast<std::valarray<double> > (row(i));
+Mat Mat::transpose(const Mat& A) {
+    Mat result(A.cols(), A.rows());
+    for (int i = 1; i <= A.rows(); ++i)
+        result.col(i) = A.row(i);
     return result;
 }
 
-void fwsb(const Mat& L, Mat& x, const Mat& b) {
+void Mat::fwsb(const Mat& L, Mat& x, const Mat& b) {
     int n = x.rows();
     x(1) = b(1);
     for (int i = 1; i <= n; ++i) {
@@ -91,7 +91,7 @@ void fwsb(const Mat& L, Mat& x, const Mat& b) {
     }
 }
 
-void bwsb(const Mat& U, Mat& x, const Mat& b) {
+void Mat::bwsb(const Mat& U, Mat& x, const Mat& b) {
     int n = x.rows();
     x(n) = b(n)/U(n,n);
     for (int i = n-1; i >= 1; --i) {
