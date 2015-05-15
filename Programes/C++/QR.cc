@@ -17,9 +17,13 @@ void QR(Mat& Q, Mat& R) {
     }
 }
 
+void solveQR(const Mat& Q, const Mat& R, Mat& x, const Mat& b) {
+    Mat::bwsb(R, x, Mat::transpose(Q)*b);
+}
+
 int main() {
 //    cout.precision(20);
-    Mat A(5,3);
+    Mat A(3,3);
     cin >> A;
     Mat Q = A;
     Mat R(3,3);
@@ -28,5 +32,10 @@ int main() {
     Mat::printOctave(Q,cout);
     cout << "\nMatriu R\n";
     Mat::printOctave(R, cout);
-    cout << endl;
+
+    Mat b (3,1);
+    cin >> b;
+    Mat x (3,1);
+    solveQR(Q,R,x,b);
+    cout << "solució\n" << x << endl;
 }
