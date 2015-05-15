@@ -50,6 +50,18 @@ std::slice_array<double> Mat::operator[](std::slice s) {
     return data_[s];
 }
 
+Mat& Mat::operator*=(const Mat& B) {
+    assert(cols() == B.rows() and cols() == B.cols());;
+    for (int i = 1; i <= rows(); ++i) {
+        for (int j = 1; j <= cols(); ++j) {
+            double sum = 0;
+            for (int k = 1; k <= cols(); ++k) sum += (*this)(i,k)*B(k,j);
+            (*this)(i,j) = sum;
+        }
+    }
+    return *this;
+}
+
 void Mat::swap_row(const int r1, const int r2) {
     std::valarray<double> tmp = row(r1);
     row(r1) = row(r2);
@@ -67,6 +79,26 @@ Mat Mat::transpose() {
     for (int i = 0; i < rows_; ++i)
         result.col(i) = static_cast<std::valarray<double> > (row(i));
     return result;
+}
+
+void fwsb(const Mat& L, Mat& x, const Mat& b) {
+    int n = x.rows();
+    x(1) = b(1);
+    for (int i = 1; i <= n; ++i) {
+        double sum = 0;
+        for (int j = 1; j < i; ++j) sum += L(i,j)*x(j);
+        x(i) = b(i) - sum;
+    }
+}
+
+void bwsb(const Mat& U, Mat& x, const Mat& b) {
+    int n = x.rows();
+    x(n) = b(n)/U(n,n);
+    for (int i = n-1; i >= 1; --i) {
+        double sum = 0;
+        for (int j = i+1; j <= n; ++j) sum += U(i,j)*x(j);
+        x(i) = (b(i) - sum)/U(i,i);
+    }
 }
 
 double Mat::norm1(const Mat &mat) {
@@ -120,6 +152,18 @@ void Mat::printOctave(const Mat& mat, std::ostream& out) {
             out << ',' << mat(i,j);
     }
     out << ']';
+}
+Mat operator*(const Mat& A, const Mat& B) {
+    assert(A.cols() == B.rows());;
+    Mat C (A.rows(), B.cols());
+    for (int i = 1; i <= C.rows(); ++i) {
+        for (int j = 1; j <= C.cols(); ++j) {
+            double sum = 0;
+            for (int k = 1; k <= A.cols(); ++k) sum += A(i,k)*B(k,j);
+            C(i,j) = sum;
+        }
+    }
+    return C;
 }
 /* IN/OUT OPERATIONS */
 std::ostream& operator<<(std::ostream& os, const Mat& mat) {

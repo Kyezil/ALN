@@ -1,6 +1,7 @@
 #ifndef MAT_HH
 #define MAT_HH
 #include <valarray>
+#include <cassert>
 #include <iostream>
 class Mat {
     public:
@@ -35,12 +36,20 @@ class Mat {
         std::valarray<double> operator[] (std::slice s) const;
         std::slice_array<double> operator[](std::slice s);
 
+        // multiply
+        Mat& operator*=(const Mat& B);
+
         // permuta dues files/columnes
         void swap_row(const int r1, const int r2);
         void swap_col(const int c1, const int c2);
 
         // genetate a new matrix that is the transposition of this one
         Mat transpose();
+
+        // forward substitution
+        static void fwsb(const Mat& L, Mat& X, const Mat& B);
+        // backward substitution
+        static void bwsb(const Mat& U, Mat& X, const Mat& B);
 
         // normes matricials
         static double norm1(const Mat &mat);
@@ -55,6 +64,8 @@ class Mat {
         int cols_;
         std::valarray<double> data_;
 };
+// OPERATORS
+Mat operator*(const Mat& A, const Mat& B);
 // IN/OUT
 std::ostream& operator<<(std::ostream& os, const Mat& mat);
 std::istream& operator>>(std::istream& in, Mat& mat);
